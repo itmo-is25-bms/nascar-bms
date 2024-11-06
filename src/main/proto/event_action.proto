@@ -1,0 +1,52 @@
+﻿syntax = "proto3";
+
+option java_package = "ru.nascar.bms.presentation.abstractions";
+option java_outer_classname = "EventActionServiceProto";
+option java_generic_services = true;
+
+service EventActionService {
+  rpc Start(StartCommand) returns (StartCommandResponse);
+  rpc AddReceipt(AddReceiptCommand) returns (AddReceiptCommandResponse);
+  rpc AddReview(AddReviewCommand) returns (AddReviewCommandResponse);
+  rpc Finish(FinishCommand) returns (FinishCommandResponse);
+}
+
+message StartCommand {
+  string event_id = 1;
+  string user_id = 2;
+}
+
+message StartCommandResponse {
+}
+
+message AddReceiptCommand {
+  string event_id = 1;
+  string bar_id = 2;
+  string user_id = 3;
+  bytes receipt_data = 4;
+}
+
+message AddReceiptCommandResponse {
+}
+
+message AddReviewCommand {
+  string event_id = 1;
+  string bar_id = 2;
+  string user_id = 3;
+  AddReviewCommandReviewDto review = 4;
+}
+
+message AddReviewCommandReviewDto {
+  string review_text = 1;
+}
+
+message AddReviewCommandResponse {
+}
+
+message FinishCommand {
+  string event_id = 1;
+  string user_id = 2;
+}
+
+message FinishCommandResponse {
+}

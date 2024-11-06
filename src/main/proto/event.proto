@@ -1,0 +1,89 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_package = "ru.nascar.bms.presentation.abstractions";
+option java_outer_classname = "EventServiceProto";
+option java_generic_services = true;
+
+service EventService {
+  rpc Create(CreateCommand) returns (CreateCommandResponse);
+  rpc GetById(GetByIdQuery) returns (GetByIdQueryResponse);
+  rpc GetByPasscode(GetByPasscodeQuery) returns (GetByPasscodeQueryResponse);
+  rpc GetByUserId(GetByUserIdQuery) returns (GetByUserIdQueryResponse);
+
+  rpc AddUserToEvent(AddUserToEventCommand) returns (AddUserToEventCommandResponse);
+  rpc RemoveUserFromEvent(RemoveUserFromEventCommand) returns (RemoveUserFromEventCommandResponse);
+}
+
+message EventDto {
+  string id = 1;
+  string name = 2;
+  EventStatusDto status = 3;
+  string passcode = 4;
+  google.protobuf.Timestamp start_date = 5;
+  string author_user_id = 6;
+  repeated string participant_ids = 7;
+}
+
+enum EventStatusDto {
+  EventStatusDto_None = 0;
+  EventStatusDto_Created = 1;
+  EventStatusDto_InProgress = 2;
+  EventStatusDto_Finished = 3;
+}
+
+message CreateCommand {
+  string user_id = 1;
+  CreateCommandEventDto event = 2;
+}
+
+message CreateCommandEventDto {
+  string name = 1;
+  google.protobuf.Timestamp start_date = 2;
+  repeated string bar_ids = 3;
+}
+
+message CreateCommandResponse {
+  EventDto event = 1;
+}
+
+message GetByIdQuery {
+  string event_id = 1;
+}
+
+message GetByIdQueryResponse {
+  EventDto event = 1;
+}
+
+message GetByPasscodeQuery {
+  string passcode = 1;
+}
+
+message GetByPasscodeQueryResponse {
+  optional EventDto event = 1;
+}
+
+message GetByUserIdQuery {
+  string user_id = 1;
+}
+
+message GetByUserIdQueryResponse {
+  repeated EventDto events = 1;
+}
+
+message AddUserToEventCommand {
+  string event_id = 1;
+  string user_id = 2;
+}
+
+message AddUserToEventCommandResponse {
+}
+
+message RemoveUserFromEventCommand {
+  string event_id = 1;
+  string user_id = 2;
+}
+
+message RemoveUserFromEventCommandResponse {
+}

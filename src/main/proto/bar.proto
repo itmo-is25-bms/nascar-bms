@@ -1,0 +1,48 @@
+﻿syntax = "proto3";
+
+package ru.nascar.bms;
+
+option java_package = "ru.nascar.bms.presentation.abstractions";
+option java_outer_classname = "BarServiceProto";
+option java_generic_services = true;
+
+service BarService {
+  rpc Create(CreateCommand) returns (CreateCommandResponse);
+  rpc GetById(GetByIdQuery) returns (GetByIdQueryResponse);
+  rpc GetAll(GetAllQuery) returns (GetAllQueryResponse);
+}
+
+message BarDto {
+  string id = 1;
+  string name = 2;
+  string address = 3;
+}
+
+message CreateCommand {
+  string user_id = 1;
+  CreateCommandBarDto bar = 2;
+}
+
+message CreateCommandBarDto {
+  string name = 1;
+  string address = 2;
+}
+
+message CreateCommandResponse {
+  BarDto bar = 1;
+}
+
+message GetByIdQuery {
+  string bar_id = 1;
+}
+
+message GetByIdQueryResponse {
+  BarDto bar = 1;
+}
+
+message GetAllQuery {
+}
+
+message GetAllQueryResponse {
+  repeated BarDto bars = 1;
+}
