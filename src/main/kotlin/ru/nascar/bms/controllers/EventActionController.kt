@@ -1,4 +1,4 @@
-package ru.nascar.bms.presentation.controllers
+package ru.nascar.bms.controllers
 
 import net.devh.boot.grpc.server.service.GrpcService
 import ru.nascar.bms.presentation.abstractions.EventActionServiceGrpcKt

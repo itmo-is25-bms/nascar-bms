@@ -7,15 +7,16 @@ val grpcVersion by extra("1.53.0")
 val grpcKotlinVersion by extra("1.3.0")
 
 plugins {
-	id("org.springframework.boot") version "3.0.1"
+	id("org.springframework.boot") version "3.0.5"
 	id("io.spring.dependency-management") version "1.1.0"
 	id("com.google.protobuf") version "0.9.2"
 	kotlin("jvm") version "1.7.22"
 	kotlin("plugin.spring") version "1.7.22"
+	kotlin("plugin.jpa") version "1.7.22"
 }
 
 group = "ru.nascar"
-version = "0.0.1-SNAPSHOT"
+version = "1.0"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -28,8 +29,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-maven-plugin:3.0.4")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	implementation("net.devh:grpc-spring-boot-starter:2.14.0.RELEASE")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("com.google.protobuf:protobuf-java:$protobufVersion")
 	implementation("io.grpc:grpc-protobuf")
 	implementation("io.grpc:grpc-stub")
@@ -37,6 +40,8 @@ dependencies {
 	implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
 	implementation("javax.annotation:javax.annotation-api:1.3.2")
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	runtimeOnly("org.postgresql:postgresql")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

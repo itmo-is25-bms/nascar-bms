@@ -14,3 +14,20 @@ services:
       - POSTGRES_HOST=5432
     volumes:
       - ./docker_data/bms_db:/var/lib/postgresql/data
+  bms:
+    container_name: bms_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DB_URL: ${DB_URL}
+        PG_USER: ${PG_USER}
+        PG_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - "8000:8000"
+    environment:
+      DB_URL: jdbc:postgresql://bms_db:5432/postgres
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+    depends_on:
+      - bms_db

@@ -1,10 +1,10 @@
-package ru.nascar.bms.presentation
+package ru.nascar.bms
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
-@SpringBootApplication(scanBasePackages = ["ru.nascar"])
+@SpringBootApplication
 @ConfigurationPropertiesScan
 class NascarBmsApplication
 

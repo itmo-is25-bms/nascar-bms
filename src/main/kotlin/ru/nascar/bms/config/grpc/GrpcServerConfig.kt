@@ -1,4 +1,4 @@
-package ru.nascar.bms.presentation.config.grpc
+package ru.nascar.bms.config.grpc
 
 import net.devh.boot.grpc.client.autoconfigure.GrpcClientAutoConfiguration
 import net.devh.boot.grpc.client.autoconfigure.GrpcClientHealthAutoConfiguration
