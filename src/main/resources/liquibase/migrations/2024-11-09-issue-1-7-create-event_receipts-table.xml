@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-event_receipts-table" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="event_receipts"/>
+            </not>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            create table event_receipts
+            (
+                id         text primary key,
+                event_id   text                                                    not null,
+                bar_id     text                                                    not null,
+                receipt_id text                                                    not null,
+                created_by text                                                    not null,
+                created_at timestamptz default timezone('utc', now())::timestamptz not null,
+
+                constraint fk_event_receipts_events foreign key (event_id) references events (id),
+                constraint fk_event_receipts_bars foreign key (bar_id) references bars (id),
+                constraint fk_event_receipts_receipts foreign key (receipt_id) references receipts (id)
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="event_receipts"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-event_receipts-unq_event_receipts_receipt_id" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="event_receipts" indexName="unq_event_receipts_receipt_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="event_receipts" indexName="unq_event_receipts_receipt_id" unique="true">
+            <column name="receipt_id"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="event_receipts" indexName="unq_bar_reviews_event_id_bar_id_user_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-event_receipts-comments" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="event_receipts"/>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            comment on table event_receipts is 'Чеки мероприятия';
+            comment on column event_receipts.id is 'Идентификатор записи';
+            comment on column event_receipts.event_id is 'Идентификатор события';
+            comment on column event_receipts.bar_id is 'Идентификатор бара';
+            comment on column event_receipts.receipt_id is 'Идентификатор чека';
+            comment on column event_receipts.created_by is 'Пользователь, добавивший запись';
+            comment on column event_receipts.created_at is 'Дата и время создания записи';
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

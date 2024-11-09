@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   bms_db:
     image: postgres:latest

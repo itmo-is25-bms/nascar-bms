@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-event_bars-table" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="event_bars"/>
+            </not>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            create table event_bars
+            (
+                id         text primary key,
+                event_id   text                                                    not null,
+                bar_id     text                                                    not null,
+                created_by text                                                    not null,
+                created_at timestamptz default timezone('utc', now())::timestamptz not null,
+
+                constraint fk_event_bars_events foreign key (event_id) references events (id),
+                constraint fk_event_bars_bars foreign key (bar_id) references bars (id)
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="event_bars"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-event_bars-unq_event_bars_event_id_bar_id" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="event_bars" indexName="unq_event_bars_event_id_bar_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="event_bars" indexName="unq_event_bars_event_id_bar_id" unique="true">
+            <column name="event_id"/>
+            <column name="bar_id"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="event_bars" indexName="unq_event_bars_event_id_bar_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-event_bars-comments" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="event_bars"/>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            comment on table event_bars is 'Бары в мероприятии';
+            comment on column event_bars.id is 'Идентификатор записи';
+            comment on column event_bars.event_id is 'Идентификатор события';
+            comment on column event_bars.bar_id is 'Идентификатор бара';
+            comment on column event_bars.created_by is 'Пользователь, добавивший запись';
+            comment on column event_bars.created_at is 'Дата и время создания записи';
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

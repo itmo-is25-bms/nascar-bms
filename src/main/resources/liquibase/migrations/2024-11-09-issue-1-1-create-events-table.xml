@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-events-table" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="events"/>
+            </not>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            create table events
+            (
+                id             text primary key,
+                name           text,
+                status         text                                                    not null,
+                passcode       text                                                    not null,
+                start_datetime timestamptz                                             not null,
+                created_by     text                                                    not null,
+                created_at     timestamptz default timezone('utc', now())::timestamptz not null,
+                updated_by     text                                                    not null,
+                updated_at     timestamptz default timezone('utc', now())::timestamptz not null
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="events"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-events-comments" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="events"/>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            comment on table events is 'Мероприятия';
+            comment on column events.id is 'Идентификатор мероприятия';
+            comment on column events.name is 'Название мероприятия';
+            comment on column events.status is 'Статус мероприятия';
+            comment on column events.passcode is 'Пригласительный код для мероприятия';
+            comment on column events.start_datetime is 'Дата и время начала мероприятия';
+            comment on column events.created_by is 'Создатель мероприятия';
+            comment on column events.created_at is 'Дата и время создания мероприятия';
+            comment on column events.updated_by is 'Пользователь, обновивший мероприятие';
+            comment on column events.updated_at is 'Дата и время обновления мероприятия';
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>
