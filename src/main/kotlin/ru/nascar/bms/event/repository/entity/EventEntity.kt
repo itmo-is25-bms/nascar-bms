@@ -1,19 +1,15 @@
 package ru.nascar.bms.event.repository.entity
 
-import jakarta.persistence.*
-import java.util.Date
+import java.time.Instant
 
-@Entity
-@Table(name = "events")
 class EventEntity(
-    @Id
     val id: String,
     val name: String,
     val status: String,
     val passcode: String,
-    val startDateTime: Date,
+    val startDateTime: Instant,
     val createdBy: String,
-    val createdAt: Date,
+    val createdAt: Instant,
     val updatedBy: String,
-    val updatedAt: Date,
+    val updatedAt: Instant,
 )

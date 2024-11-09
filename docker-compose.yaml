@@ -25,7 +25,7 @@ services:
       - "8000:8000"
     environment:
       DB_URL: jdbc:postgresql://bms_db:5432/postgres
-      PG_USER: postgres
-      PG_PASSWORD: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
     depends_on:
       - bms_db

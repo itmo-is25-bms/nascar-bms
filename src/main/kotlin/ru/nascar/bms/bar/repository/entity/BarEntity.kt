@@ -1,33 +1,22 @@
 package ru.nascar.bms.bar.repository.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
-import java.time.OffsetDateTime
+import java.time.Instant
 
-@Entity
-@Table(
-    name = "bars",
-    uniqueConstraints = [
-        UniqueConstraint(columnNames = ["name", "address"])
-    ]
-)
 class BarEntity(
-    @Id val id: String,
+    val id: String,
     val name: String,
     val address: String,
     val createdBy: String,
-    val createdAt: OffsetDateTime,
+    val createdAt: Instant,
     val updatedBy: String,
-    val updatedAt: OffsetDateTime,
+    val updatedAt: Instant,
 ) {
     constructor(
         id: String,
         name: String,
         address: String,
         createdBy: String,
-        createdAt: OffsetDateTime
+        createdAt: Instant
     ) : this(
             id = id,
             name = name,
