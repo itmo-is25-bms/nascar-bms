@@ -55,6 +55,9 @@ dependencies {
 
 	// test block
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.dbunit:dbunit:2.8.0")
+	testImplementation("com.github.springtestdbunit:spring-test-dbunit:1.3.0")
+	testImplementation("io.zonky.test:embedded-postgres:2.0.7")
 }
 
 tasks.withType<KotlinCompile> {
