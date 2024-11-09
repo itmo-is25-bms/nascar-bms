@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-receipts-table" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="receipts"/>
+            </not>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            create table receipts
+            (
+                id           text primary key,
+                receipt_data bytea                                                   not null,
+                created_by   text                                                    not null,
+                created_at   timestamptz default timezone('utc', now())::timestamptz not null
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="receipts"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-receipts-comments" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="receipts"/>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            comment on table receipts is 'Чеки';
+            comment on column receipts.id is 'Идентификатор чека';
+            comment on column receipts.receipt_data is 'Данные чека';
+            comment on column receipts.created_at is 'Дата и время добавления чека';
+            comment on column receipts.created_by is 'Пользователь, добавивший чек';
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

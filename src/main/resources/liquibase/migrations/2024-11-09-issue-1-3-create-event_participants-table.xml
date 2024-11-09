@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-event_participants-table" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="event_participants"/>
+            </not>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            create table event_participants
+            (
+                id         text primary key,
+                event_id   text                                                    not null,
+                user_id    text                                                    not null,
+                joined_at  timestamptz default timezone('utc', now())::timestamptz not null,
+                created_by text                                                    not null,
+                created_at timestamptz default timezone('utc', now())::timestamptz not null,
+
+                constraint fk_event_participants_events foreign key (event_id) references events (id)
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="event_participants"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-event_participants-unq_event_participants_event_id_user_id" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="event_participants" indexName="unq_event_participants_event_id_user_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="event_participants" indexName="unq_event_participants_event_id_user_id" unique="true">
+            <column name="event_id"/>
+            <column name="user_id"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="event_participants" indexName="unq_event_participants_event_id_user_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-event_participants-comments" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="event_participants"/>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            comment on table event_participants is 'Участники мероприятия';
+            comment on column event_participants.id is 'Идентификатор записи';
+            comment on column event_participants.event_id is 'Идентификатор мероприятия';
+            comment on column event_participants.user_id is 'Идентификатор участника';
+            comment on column event_participants.joined_at is 'Дата и время присоединения пользователя к мероприятию';
+            comment on column event_participants.created_by is 'Пользователь, добавивший запись';
+            comment on column event_participants.created_at is 'Дата и время создания записи';
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

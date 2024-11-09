@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-bar_reviews-table" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="bar_reviews"/>
+            </not>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            create table bar_reviews
+            (
+                id         text primary key,
+                event_id   text                                                    not null,
+                bar_id     text                                                    not null,
+                score      integer                                                 not null,
+                comment    text,
+                created_by text                                                    not null,
+                created_at timestamptz default timezone('utc', now())::timestamptz not null,
+
+                constraint fk_bar_reviews_events foreign key (event_id) references events (id),
+                constraint fk_bar_reviews_bars foreign key (bar_id) references bars (id)
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="bar_reviews"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-bar_reviews-unq_bar_reviews_event_id_bar_id_user_id" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="bar_reviews" indexName="unq_bar_reviews_event_id_bar_id_user_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="bar_reviews" indexName="unq_bar_reviews_event_id_bar_id_user_id" unique="true">
+            <column name="event_id"/>
+            <column name="bar_id"/>
+            <column name="created_by"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="bar_reviews" indexName="unq_bar_reviews_event_id_bar_id_user_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-bar_reviews-comments" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="bar_reviews"/>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            comment on table bar_reviews is 'Отзывы о баре';
+            comment on column bar_reviews.id is 'Идентификатор отзыва';
+            comment on column bar_reviews.event_id is 'Идентификатор мероприятия';
+            comment on column bar_reviews.bar_id is 'Идентификатор бара';
+            comment on column bar_reviews.score is 'Оценка по пятибалльной шкале';
+            comment on column bar_reviews.comment is 'Текст отзыва';
+            comment on column bar_reviews.created_by is 'Пользователь, оставивший отзыв';
+            comment on column bar_reviews.created_at is 'Дата и время создания отзыва';
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

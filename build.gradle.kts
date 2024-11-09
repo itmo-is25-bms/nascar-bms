@@ -41,6 +41,7 @@ dependencies {
 	implementation("javax.annotation:javax.annotation-api:1.3.2")
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("org.postgresql:postgresql")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

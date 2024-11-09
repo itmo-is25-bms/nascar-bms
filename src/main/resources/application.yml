@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+grpc:
+  server:
+    port: 8000
+
+spring:
+  application:
+    name: nascar-bms
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 10000
+      pool-name: pg-pool
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:liquibase/changelog-master.xml
+

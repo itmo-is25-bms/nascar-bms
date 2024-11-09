@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-bars-table" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="bars"/>
+            </not>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            create table bars
+            (
+                id         text primary key,
+                name       text                                                    not null,
+                address    text                                                    not null,
+                created_by text                                                    not null,
+                created_at timestamptz default timezone('utc', now())::timestamptz not null,
+                updated_by text                                                    not null,
+                updated_at timestamptz default timezone('utc', now())::timestamptz not null
+            );
+            ]]>
+        </sql>
+        <rollback>
+            <dropTable tableName="bars"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-bars-unq_bars_name_address" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="bars" indexName="unq_bars_name_address"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="bars" indexName="unq_bars_name_address" unique="true">
+            <column name="name"/>
+            <column name="address"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="bars" indexName="unq_bars_name_address"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="init-bars-comments" author="kslacker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="bars"/>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            comment on table bars is 'Бары';
+            comment on column bars.id is 'Идентификатор бара';
+            comment on column bars.name is 'Название бара';
+            comment on column bars.address is 'Адрес бара';
+            comment on column bars.created_by is 'Пользователь, добавивший запись';
+            comment on column bars.created_at is 'Дата и время создания записи';
+            comment on column bars.updated_by is 'Пользователь, обновивший запись';
+            comment on column bars.updated_at is 'Дата и время обновления записи';
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>
