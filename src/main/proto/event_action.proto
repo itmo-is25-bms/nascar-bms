@@ -37,7 +37,8 @@ message AddReviewCommand {
 }
 
 message AddReviewCommandReviewDto {
-  string review_text = 1;
+  int32 score = 1;
+  optional string review_text = 2;
 }
 
 message AddReviewCommandResponse {
