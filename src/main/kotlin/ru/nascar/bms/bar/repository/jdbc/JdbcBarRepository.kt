@@ -34,7 +34,7 @@ class JdbcBarRepository(
         private const val UPSERT = """
             insert into bars (id, name, address, created_by, created_at, updated_by, updated_at)
             values (:id, :name, :address, :user, :now, :user, :now)
-            on conflict (id) do update
+            on conflict (id) do update set
                 name = :name,
                 address = :address,
                 updated_by = :user,
