@@ -24,6 +24,7 @@ message EventDto {
   google.protobuf.Timestamp start_date = 5;
   string author_user_id = 6;
   repeated string participant_ids = 7;
+  repeated string bar_ids = 8;
 }
 
 enum EventStatusDto {
