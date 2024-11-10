@@ -1,6 +1,5 @@
 package ru.nascar.bms.event.domain.model
 
-import ru.nascar.bms.event.domain.factories.EventParticipantFactory
 import java.time.Instant
 
 class Event(
@@ -17,10 +16,20 @@ class Event(
     val updatedAt: Instant,
 ) {
     fun addUser(user: EventParticipant) {
-        if (participants.any { participant -> participant.userId == user.userId }) {
+        if (user in participants) {
+            // TODO: Or throw 'AlreadyExists'?
             return
         }
 
         participants.plus(user)
+    }
+
+    fun removeUser(user: EventParticipant) {
+        if (user !in participants) {
+            // TODO: Or throw 'NotFound'?
+            return
+        }
+
+        participants.minus(user)
     }
 }

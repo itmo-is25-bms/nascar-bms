@@ -43,9 +43,23 @@ class EventController(
         }
     }
 
+    override suspend fun getByUserId(request: GetByUserIdQuery): GetByUserIdQueryResponse {
+        val eventsInternal = eventService.getByUserId(request.userId)
+
+        val eventsDto = eventsInternal.map { eventInternal -> eventInternal.toDto() }
+
+        return GetByUserIdQueryResponse.newBuilder().addAllEvents(eventsDto).build()
+    }
+
     override suspend fun addUserToEvent(request: AddUserToEventCommand): AddUserToEventCommandResponse {
         eventService.addUserToEvent(id = request.eventId, userId = request.userId)
 
         return AddUserToEventCommandResponse.getDefaultInstance()
+    }
+
+    override suspend fun removeUserFromEvent(request: RemoveUserFromEventCommand): RemoveUserFromEventCommandResponse {
+        eventService.removeUserFromEvent(id = request.eventId, userId = request.userId)
+
+        return RemoveUserFromEventCommandResponse.getDefaultInstance()
     }
 }
