@@ -21,9 +21,7 @@ class EventController(
 
         val eventDto = eventInternal.toDto()
 
-        return CreateCommandResponse.newBuilder()
-            .setEvent(eventDto)
-            .build()
+        return CreateCommandResponse.newBuilder().setEvent(eventDto).build()
     }
 
     override suspend fun getById(request: GetByIdQuery): GetByIdQueryResponse {
@@ -31,9 +29,7 @@ class EventController(
 
         val eventDto = eventInternal.toDto()
 
-        return GetByIdQueryResponse.newBuilder()
-            .setEvent(eventDto)
-            .build()
+        return GetByIdQueryResponse.newBuilder().setEvent(eventDto).build()
     }
 
     override suspend fun getByPasscode(request: GetByPasscodeQuery): GetByPasscodeQueryResponse {

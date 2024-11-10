@@ -39,10 +39,7 @@ class DefaultEventService(
     override fun getByPasscode(passcode: String): EventInternal? {
         val event = eventRepository.findByPasscode(passcode)
 
-        return when (event) {
-            null -> null
-            else -> EventInternal.fromDomain(event)
-        }
+        return if (event == null) null else EventInternal.fromDomain(event)
     }
 
     override fun addUserToEvent(id: String, userId: String) {
