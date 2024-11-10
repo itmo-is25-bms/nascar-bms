@@ -6,4 +6,6 @@ import ru.nascar.bms.event.domain.model.EventParticipant
 interface EventParticipantRepository {
     fun findAllByEventId(eventId: String): List<EventParticipant>
     fun saveAllFromEvent(event: Event)
+    fun save(eventParticipant: EventParticipant)
+    fun delete(eventParticipantId: String)
 }

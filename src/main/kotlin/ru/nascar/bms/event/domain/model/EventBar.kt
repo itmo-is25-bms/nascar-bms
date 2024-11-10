@@ -8,4 +8,15 @@ class EventBar(
     val barId: String,
     val createdBy: String,
     val createdAt: Instant,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is EventBar) return false
+
+        return eventId == other.eventId && barId == other.barId
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+}

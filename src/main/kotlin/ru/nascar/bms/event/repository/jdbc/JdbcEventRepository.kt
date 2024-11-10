@@ -135,6 +135,7 @@ class JdbcEventRepository(
             params
         )
 
+        // TODO: In transaction
         eventBarRepository.saveAllFromEvent(event)
         eventParticipantRepository.saveAllFromEvent(event)
     }
