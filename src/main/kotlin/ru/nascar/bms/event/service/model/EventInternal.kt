@@ -21,7 +21,7 @@ data class EventInternal(
                 status = EventStatusInternal.fromDomain(event.status),
                 passcode = event.passcode,
                 startDateTime = event.startDateTime,
-                eventBars = event.eventBars,
+                eventBars = event.eventBars.map { bar -> bar.barId },
                 participants = event.participants.map { participant -> participant.userId },
                 createdBy = event.createdBy,
             )
