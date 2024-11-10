@@ -2,6 +2,7 @@ package ru.nascar.bms.event.service.impl
 
 import org.springframework.stereotype.Service
 import ru.nascar.bms.event.domain.factories.EventFactory
+import ru.nascar.bms.event.domain.factories.EventParticipantFactory
 import ru.nascar.bms.event.repository.EventRepository
 import ru.nascar.bms.event.service.EventService
 import ru.nascar.bms.event.service.model.EventInternal
@@ -14,8 +15,9 @@ class DefaultEventService(
     private val eventRepository: EventRepository,
     private val clock: Clock,
 ) : EventService {
-    override fun create(userId: String, name: String, startDatetime: Instant, eventBars: List<String>): EventInternal {
+    override fun create(userId: String, name: String, startDatetime: Instant, eventBarsIds: List<String>): EventInternal {
         val passcode = UUID.randomUUID().toString()
+        val eventBars = eventBarsIds.map { id ->  }
         val event = EventFactory.createNew(
             name = name,
             passcode = passcode,
@@ -46,8 +48,14 @@ class DefaultEventService(
 
     override fun addUserToEvent(id: String, userId: String) {
         val event = eventRepository.findById(id)!!
+        val user = EventParticipantFactory.createNew(
+            eventId = id,
+            userId = userId,
+            createdAt = clock.instant(),
+            createdBy = userId,
+        )
 
-        event.addUser(userId)
+        event.addUser(user)
 
         eventRepository.save(event)
     }

@@ -1,6 +1,7 @@
 package ru.nascar.bms.event.domain.factories
 
 import ru.nascar.bms.event.domain.model.Event
+import ru.nascar.bms.event.domain.model.EventBar
 import ru.nascar.bms.event.domain.model.EventParticipant
 import ru.nascar.bms.event.domain.model.EventStatus
 import java.time.Instant
@@ -12,7 +13,7 @@ class EventFactory {
             name: String,
             passcode: String,
             startDateTime: Instant,
-            eventBars: List<String>,
+            eventBarsIds: List<String>,
             createdBy: String,
             createdAt: Instant,
         ): Event {
@@ -23,6 +24,12 @@ class EventFactory {
                 createdAt = createdAt,
                 createdBy = createdBy
             )
+            val eventBars = eventBarsIds.map { barId -> EventBarFactory.createNew(
+                eventId = id,
+                barId = barId,
+                createdBy = createdBy,
+                createdAt = createdAt,
+            ) }
             return Event(
                 id = id,
                 name = name,
@@ -44,7 +51,7 @@ class EventFactory {
             status: EventStatus,
             passcode: String,
             startDateTime: Instant,
-            eventBars: List<String>,
+            eventBars: List<EventBar>,
             participants: List<EventParticipant>,
             createdBy: String,
             createdAt: Instant,

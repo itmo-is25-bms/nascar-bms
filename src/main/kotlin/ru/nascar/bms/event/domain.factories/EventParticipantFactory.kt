@@ -7,7 +7,7 @@ import java.util.UUID
 class EventParticipantFactory {
     companion object {
         fun createNew(eventId: String, userId: String, createdAt: Instant, createdBy: String): EventParticipant {
-            val id = "participant-" + UUID.randomUUID().toString()
+            val id = "event-participant-" + UUID.randomUUID().toString()
             return EventParticipant(
                 id = id,
                 eventId = eventId,

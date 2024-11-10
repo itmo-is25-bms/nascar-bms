@@ -9,20 +9,18 @@ class Event(
     val status: EventStatus,
     val passcode: String,
     val startDateTime: Instant,
-    val eventBars: List<String>,
+    val eventBars: List<EventBar>,
     val participants: List<EventParticipant>,
     val createdBy: String,
     val createdAt: Instant,
     val updatedBy: String,
     val updatedAt: Instant,
 ) {
-    fun addUser(userId: String) {
-        if (participants.any { participant -> participant.userId == userId }) {
+    fun addUser(user: EventParticipant) {
+        if (participants.any { participant -> participant.userId == user.userId }) {
             return
         }
 
-        val participant = EventParticipantFactory.createNew(eventId = id, userId = userId)
-
-        participants.plus(participant)
+        participants.plus(user)
     }
 }

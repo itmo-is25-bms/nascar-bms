@@ -22,7 +22,7 @@ data class EventInternal(
                 passcode = event.passcode,
                 startDateTime = event.startDateTime,
                 eventBars = event.eventBars,
-                participants = event.participants,
+                participants = event.participants.map { participant -> participant.userId },
                 createdBy = event.createdBy,
             )
         }
