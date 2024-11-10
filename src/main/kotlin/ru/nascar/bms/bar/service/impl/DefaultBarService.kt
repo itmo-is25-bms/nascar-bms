@@ -1,6 +1,7 @@
 package ru.nascar.bms.bar.service.impl
 
 import org.springframework.stereotype.Service
+import ru.nascar.bms.bar.domain.exception.BarNotFoundException
 import ru.nascar.bms.bar.domain.model.Bar
 import ru.nascar.bms.bar.repository.BarRepository
 import ru.nascar.bms.bar.repository.entity.BarEntity
@@ -30,7 +31,11 @@ class DefaultBarService(
     }
 
     override fun getById(id: String): Bar {
-        return barRepository.findById(id)!!.toDomainModel()
+        return findById(id) ?: throw BarNotFoundException.withBarId(id)
+    }
+
+    private fun findById(id: String): Bar? {
+        return barRepository.findById(id)?.toDomainModel()
     }
 
     override fun getAll(): List<Bar> {
