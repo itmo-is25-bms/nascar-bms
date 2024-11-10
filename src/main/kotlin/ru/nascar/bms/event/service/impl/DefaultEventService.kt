@@ -17,12 +17,11 @@ class DefaultEventService(
 ) : EventService {
     override fun create(userId: String, name: String, startDatetime: Instant, eventBarsIds: List<String>): EventInternal {
         val passcode = UUID.randomUUID().toString()
-        val eventBars = eventBarsIds.map { id ->  }
         val event = EventFactory.createNew(
             name = name,
             passcode = passcode,
             startDateTime = startDatetime,
-            eventBars = eventBars,
+            eventBarsIds = eventBarsIds,
             createdBy = userId,
             createdAt = clock.instant(),
         )

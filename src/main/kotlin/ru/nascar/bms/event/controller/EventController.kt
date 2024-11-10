@@ -16,7 +16,7 @@ class EventController(
             userId = request.userId,
             name = request.event.name,
             startDatetime = request.event.startDate.toInstant(),
-            eventBars = request.event.barIdsList
+            eventBarsIds = request.event.barIdsList,
         )
 
         val eventDto = eventInternal.toDto()
