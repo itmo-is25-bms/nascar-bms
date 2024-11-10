@@ -1,9 +1,76 @@
 package ru.nascar.bms.event.service.impl
 
+import org.springframework.stereotype.Service
+import ru.nascar.bms.event.domain.factories.EventFactory
+import ru.nascar.bms.event.domain.factories.EventParticipantFactory
 import ru.nascar.bms.event.repository.EventRepository
 import ru.nascar.bms.event.service.EventService
+import ru.nascar.bms.event.service.model.EventInternal
+import java.time.Clock
+import java.time.Instant
+import java.util.UUID
 
+@Service
 class DefaultEventService(
     private val eventRepository: EventRepository,
+    private val clock: Clock,
 ) : EventService {
+    override fun create(userId: String, name: String, startDatetime: Instant, eventBarsIds: List<String>): EventInternal {
+        val passcode = UUID.randomUUID().toString()
+        val event = EventFactory.createNew(
+            name = name,
+            passcode = passcode,
+            startDateTime = startDatetime,
+            eventBarsIds = eventBarsIds,
+            createdBy = userId,
+            createdAt = clock.instant(),
+        )
+
+        eventRepository.save(event)
+
+        return EventInternal.fromDomain(event)
+    }
+
+    override fun getById(id: String): EventInternal {
+        val event = eventRepository.findById(id)
+        return EventInternal.fromDomain(event!!)
+    }
+
+    override fun getByPasscode(passcode: String): EventInternal? {
+        val event = eventRepository.findByPasscode(passcode)
+        return if (event == null) null else EventInternal.fromDomain(event)
+    }
+
+    override fun getByUserId(userId: String): List<EventInternal> {
+        val events = eventRepository.findAllByCreatedBy(userId)
+        return events.map { event -> EventInternal.fromDomain(event) }
+    }
+
+    override fun addUserToEvent(id: String, userId: String) {
+        val event = eventRepository.findById(id)!!
+        val user = EventParticipantFactory.createNew(
+            eventId = id,
+            userId = userId,
+            createdAt = clock.instant(),
+            createdBy = userId,
+        )
+
+        event.addUser(user)
+
+        eventRepository.save(event)
+    }
+
+    override fun removeUserFromEvent(id: String, userId: String) {
+        val event = eventRepository.findById(id)!!
+        val user = EventParticipantFactory.createNew(
+            eventId = id,
+            userId = userId,
+            createdAt = clock.instant(),
+            createdBy = userId,
+        )
+
+        event.removeUser(user)
+
+        eventRepository.save(event)
+    }
 }

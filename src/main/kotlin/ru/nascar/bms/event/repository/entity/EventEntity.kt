@@ -12,4 +12,24 @@ class EventEntity(
     val createdAt: Instant,
     val updatedBy: String,
     val updatedAt: Instant,
-)
+) {
+    constructor(
+        id: String,
+        name: String,
+        status: String,
+        passcode: String,
+        startDateTime: Instant,
+        createdBy: String,
+        createdAt: Instant
+    ) : this(
+        id = id,
+        name = name,
+        status = status,
+        passcode = passcode,
+        startDateTime = startDateTime,
+        createdAt = createdAt,
+        createdBy = createdBy,
+        updatedAt = createdAt,
+        updatedBy = createdBy,
+    )
+}
