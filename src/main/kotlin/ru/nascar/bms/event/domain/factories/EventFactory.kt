@@ -3,6 +3,7 @@ package ru.nascar.bms.event.domain.factories
 import ru.nascar.bms.event.domain.model.Event
 import ru.nascar.bms.event.domain.model.EventBar
 import ru.nascar.bms.event.domain.model.EventParticipant
+import ru.nascar.bms.event.domain.model.EventReceipt
 import ru.nascar.bms.event.domain.model.EventStatus
 import java.time.Instant
 import java.util.UUID
@@ -38,6 +39,7 @@ class EventFactory {
                 startDateTime = startDateTime,
                 eventBars = eventBars,
                 participants = listOf(author),
+                receipts = listOf(),
                 createdAt = createdAt,
                 createdBy = createdBy,
                 updatedAt = createdAt,
@@ -53,6 +55,7 @@ class EventFactory {
             startDateTime: Instant,
             eventBars: List<EventBar>,
             participants: List<EventParticipant>,
+            receipts: List<EventReceipt>,
             createdBy: String,
             createdAt: Instant,
             updatedBy: String,
@@ -66,6 +69,7 @@ class EventFactory {
                 startDateTime = startDateTime,
                 eventBars = eventBars,
                 participants = participants,
+                receipts = receipts,
                 createdAt = createdAt,
                 createdBy = createdBy,
                 updatedAt = updatedAt,

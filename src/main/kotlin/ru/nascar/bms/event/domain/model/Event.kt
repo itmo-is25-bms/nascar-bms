@@ -5,15 +5,16 @@ import java.time.Instant
 class Event(
     val id: String,
     val name: String,
-    val status: EventStatus,
+    var status: EventStatus,
     val passcode: String,
     val startDateTime: Instant,
     val eventBars: List<EventBar>,
     val participants: List<EventParticipant>,
+    val receipts: List<EventReceipt>,
     val createdBy: String,
     val createdAt: Instant,
-    val updatedBy: String,
-    val updatedAt: Instant,
+    var updatedBy: String,
+    var updatedAt: Instant,
 ) {
     fun addUser(user: EventParticipant) {
         if (user in participants) {
@@ -31,5 +32,41 @@ class Event(
         }
 
         participants.minus(user)
+    }
+
+    fun start(startedBy: String, startedAt: Instant) {
+        if (status != EventStatus.CREATED) {
+            // TODO: throw
+            return
+        }
+
+        if (createdBy != startedBy) {
+            // TODO: throw
+            return
+        }
+
+        status = EventStatus.IN_PROGRESS
+        updatedBy = startedBy
+        updatedAt = startedAt
+    }
+
+    fun finish(finishedBy: String, finishedAt: Instant) {
+        if (status != EventStatus.IN_PROGRESS) {
+            // TODO: throw
+            return
+        }
+
+        if (createdBy != finishedBy) {
+            // TODO: throw
+            return
+        }
+
+        status = EventStatus.FINISHED
+        updatedBy = finishedBy
+        updatedAt = finishedAt
+    }
+
+    fun addReceipt(receipt: EventReceipt) {
+        receipts.plus(receipt)
     }
 }
