@@ -19,12 +19,12 @@ services:
       dockerfile: Dockerfile
       args:
         DB_URL: ${DB_URL}
-        PG_USER: ${PG_USER}
-        PG_PASSWORD: ${PG_PASSWORD}
+        PG_USER: ${DB_USER}
+        PG_PASSWORD: ${DB_PASSWORD}
     ports:
       - "8000:8000"
     environment:
-      DB_URL: jdbc:postgresql://bms_db:5432/postgres
+      DB_URL: postgresql://bms_db:5432/postgres
       DB_USER: postgres
       DB_PASSWORD: postgres
     depends_on:

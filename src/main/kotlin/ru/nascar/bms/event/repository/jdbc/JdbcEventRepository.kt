@@ -7,7 +7,9 @@ import ru.nascar.bms.event.domain.factories.EventFactory
 import ru.nascar.bms.event.domain.model.Event
 import ru.nascar.bms.event.domain.model.EventStatus
 import ru.nascar.bms.event.repository.EventBarRepository
+import ru.nascar.bms.event.repository.EventBarReviewRepository
 import ru.nascar.bms.event.repository.EventParticipantRepository
+import ru.nascar.bms.event.repository.EventReceiptRepository
 import ru.nascar.bms.event.repository.EventRepository
 import ru.nascar.bms.event.repository.entity.EventEntity
 import ru.nascar.bms.infra.getUtcInstant
@@ -18,6 +20,8 @@ class JdbcEventRepository(
     private val jdbcTemplate: NamedParameterJdbcTemplate,
     private val eventBarRepository: EventBarRepository,
     private val eventParticipantRepository: EventParticipantRepository,
+    private val eventReceiptRepository: EventReceiptRepository,
+    private val eventBarReviewRepository: EventBarReviewRepository,
 ) : EventRepository {
 
     companion object {
@@ -58,7 +62,7 @@ class JdbcEventRepository(
                 status = :status,
                 start_datetime = :start_datetime,
                 updated_by = :user,
-                updated_at = :now;
+                updated_at = :now
         """
 
         private val EVENT_ENTITY_MAPPER = RowMapper { rs, _ ->
@@ -123,7 +127,7 @@ class JdbcEventRepository(
         val params = mapOf(
             "id" to event.id,
             "name" to event.name,
-            "status" to event.status,
+            "status" to event.status.toString(),
             "passcode" to event.passcode,
             "start_datetime" to event.startDateTime.toOffsetDateTime(),
             "user" to event.updatedBy,
@@ -138,11 +142,15 @@ class JdbcEventRepository(
         // TODO: In transaction
         eventBarRepository.saveAllFromEvent(event)
         eventParticipantRepository.saveAllFromEvent(event)
+        eventReceiptRepository.saveAllFromEvent(event)
+        eventBarReviewRepository.saveAllFromEvent(event)
     }
 
     private fun createEvent(eventEntity: EventEntity): Event {
         val eventBars = eventBarRepository.findAllByEventId(eventEntity.id)
         val eventParticipants = eventParticipantRepository.findAllByEventId(eventEntity.id)
+        val eventReceipts = eventReceiptRepository.findAllByEventId(eventEntity.id)
+        val eventBarReviews = eventBarReviewRepository.findAllByEventId(eventEntity.id)
 
         return EventFactory.createFromDb(
             id = eventEntity.id,
@@ -152,6 +160,8 @@ class JdbcEventRepository(
             startDateTime = eventEntity.startDateTime,
             eventBars = eventBars,
             participants = eventParticipants,
+            receipts = eventReceipts,
+            reviews = eventBarReviews,
             createdBy = eventEntity.createdBy,
             createdAt = eventEntity.createdAt,
             updatedBy = eventEntity.updatedBy,

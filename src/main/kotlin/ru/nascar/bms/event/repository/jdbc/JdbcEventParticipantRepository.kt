@@ -24,11 +24,12 @@ class JdbcEventParticipantRepository(
                 evp.joined_at,
                 evp.created_by,
                 evp.created_at
+            from event_participants evp
         """
 
         private const val SELECT_BY_EVENT_ID = """
             $SELECT
-            where evb.event_id = :eventId
+            where evp.event_id = :event_id
         """
 
         private const val UPSERT = """
@@ -83,7 +84,7 @@ class JdbcEventParticipantRepository(
             "id" to eventParticipant.id,
             "event_id" to eventParticipant.eventId,
             "user_id" to eventParticipant.userId,
-            "joined_at" to eventParticipant.joinedAt,
+            "joined_at" to eventParticipant.joinedAt.toOffsetDateTime(),
             "created_by" to eventParticipant.createdBy,
             "created_at" to eventParticipant.createdAt.toOffsetDateTime(),
         )

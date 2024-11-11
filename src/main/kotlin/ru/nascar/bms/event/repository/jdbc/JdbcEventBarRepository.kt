@@ -28,7 +28,7 @@ class JdbcEventBarRepository(
 
         private const val SELECT_BY_EVENT_ID = """
             $SELECT
-            where evb.event_id = :eventId
+            where evb.event_id = :event_id
         """
 
         private const val UPSERT = """

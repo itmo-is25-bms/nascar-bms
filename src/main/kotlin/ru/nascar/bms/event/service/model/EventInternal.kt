@@ -11,6 +11,7 @@ data class EventInternal(
     val startDateTime: Instant,
     val eventBars: List<String>,
     val participants: List<String>,
+    val receipts: List<String>,
     val createdBy: String,
 ) {
     companion object {
@@ -23,6 +24,7 @@ data class EventInternal(
                 startDateTime = event.startDateTime,
                 eventBars = event.eventBars.map { bar -> bar.barId },
                 participants = event.participants.map { participant -> participant.userId },
+                receipts = event.receipts.map { receipt -> receipt.receiptId },
                 createdBy = event.createdBy,
             )
         }
