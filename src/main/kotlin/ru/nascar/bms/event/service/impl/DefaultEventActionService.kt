@@ -1,6 +1,7 @@
 package ru.nascar.bms.event.service.impl
 
 import org.springframework.stereotype.Service
+import ru.nascar.bms.event.domain.factories.EventBarReviewFactory
 import ru.nascar.bms.event.domain.factories.EventReceiptFactory
 import ru.nascar.bms.event.repository.EventRepository
 import ru.nascar.bms.event.service.EventActionService
@@ -41,7 +42,15 @@ class DefaultEventActionService(
     override fun addReview(eventId: String, barId: String, userId: String, score: Int, reviewText: String) {
         val event = eventRepository.findById(eventId)!!
 
-
+        val review = EventBarReviewFactory.createNew(
+            eventId = eventId,
+            barId = barId,
+            score = score,
+            comment = reviewText,
+            createdBy = userId,
+            createdAt = clock.instant(),
+        )
+        event.addReview(review)
 
         eventRepository.save(event)
     }

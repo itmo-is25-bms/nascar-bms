@@ -2,6 +2,7 @@ package ru.nascar.bms.event.domain.factories
 
 import ru.nascar.bms.event.domain.model.Event
 import ru.nascar.bms.event.domain.model.EventBar
+import ru.nascar.bms.event.domain.model.EventBarReview
 import ru.nascar.bms.event.domain.model.EventParticipant
 import ru.nascar.bms.event.domain.model.EventReceipt
 import ru.nascar.bms.event.domain.model.EventStatus
@@ -40,6 +41,7 @@ class EventFactory {
                 eventBars = eventBars,
                 participants = listOf(author),
                 receipts = listOf(),
+                reviews = listOf(),
                 createdAt = createdAt,
                 createdBy = createdBy,
                 updatedAt = createdAt,
@@ -56,6 +58,7 @@ class EventFactory {
             eventBars: List<EventBar>,
             participants: List<EventParticipant>,
             receipts: List<EventReceipt>,
+            reviews: List<EventBarReview>,
             createdBy: String,
             createdAt: Instant,
             updatedBy: String,
@@ -70,6 +73,7 @@ class EventFactory {
                 eventBars = eventBars,
                 participants = participants,
                 receipts = receipts,
+                reviews = reviews,
                 createdAt = createdAt,
                 createdBy = createdBy,
                 updatedAt = updatedAt,

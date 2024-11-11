@@ -11,6 +11,7 @@ class Event(
     val eventBars: List<EventBar>,
     val participants: List<EventParticipant>,
     val receipts: List<EventReceipt>,
+    val reviews: List<EventBarReview>,
     val createdBy: String,
     val createdAt: Instant,
     var updatedBy: String,
@@ -67,6 +68,12 @@ class Event(
     }
 
     fun addReceipt(receipt: EventReceipt) {
+        // TODO: run all checks
         receipts.plus(receipt)
+    }
+
+    fun addReview(review: EventBarReview) {
+        // TODO: run all checks
+        reviews.plus(review)
     }
 }
