@@ -16,7 +16,7 @@ class DefaultBarService(
     private val clock: Clock,
 ) : BarService {
     override fun create(userId: String, name: String, address: String): Bar {
-        val barId = UUID.randomUUID().toString()
+        val barId = "bar-" + UUID.randomUUID().toString()
         val barEntity = BarEntity(
             id = barId,
             name = name,

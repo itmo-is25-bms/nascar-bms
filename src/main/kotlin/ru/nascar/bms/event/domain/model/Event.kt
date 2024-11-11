@@ -8,10 +8,10 @@ class Event(
     var status: EventStatus,
     val passcode: String,
     val startDateTime: Instant,
-    val eventBars: List<EventBar>,
-    val participants: List<EventParticipant>,
-    val receipts: List<EventReceipt>,
-    val reviews: List<EventBarReview>,
+    var eventBars: List<EventBar>,
+    var participants: List<EventParticipant>,
+    var receipts: List<EventReceipt>,
+    var reviews: List<EventBarReview>,
     val createdBy: String,
     val createdAt: Instant,
     var updatedBy: String,
@@ -23,7 +23,7 @@ class Event(
             return
         }
 
-        participants.plus(user)
+        participants = participants.plus(user)
     }
 
     fun removeUser(user: EventParticipant) {
@@ -32,7 +32,7 @@ class Event(
             return
         }
 
-        participants.minus(user)
+        participants = participants.minus(user)
     }
 
     fun start(startedBy: String, startedAt: Instant) {
@@ -69,11 +69,11 @@ class Event(
 
     fun addReceipt(receipt: EventReceipt) {
         // TODO: run all checks
-        receipts.plus(receipt)
+        receipts = receipts.plus(receipt)
     }
 
     fun addReview(review: EventBarReview) {
         // TODO: run all checks
-        reviews.plus(review)
+        reviews = reviews.plus(review)
     }
 }

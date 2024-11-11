@@ -62,7 +62,7 @@ class JdbcEventRepository(
                 status = :status,
                 start_datetime = :start_datetime,
                 updated_by = :user,
-                updated_at = :now;
+                updated_at = :now
         """
 
         private val EVENT_ENTITY_MAPPER = RowMapper { rs, _ ->
@@ -127,7 +127,7 @@ class JdbcEventRepository(
         val params = mapOf(
             "id" to event.id,
             "name" to event.name,
-            "status" to event.status,
+            "status" to event.status.toString(),
             "passcode" to event.passcode,
             "start_datetime" to event.startDateTime.toOffsetDateTime(),
             "user" to event.updatedBy,

@@ -21,6 +21,7 @@ class JdbcEventReceiptRepository(
                 evr.id,
                 evr.event_id,
                 evr.bar_id,
+                evr.receipt_id,
                 evr.created_by,
                 evr.created_at
             from event_receipts evr
@@ -28,7 +29,7 @@ class JdbcEventReceiptRepository(
 
         private const val SELECT_BY_EVENT_ID = """
             $SELECT
-            where evr.event_id = :eventId
+            where evr.event_id = :event_id
         """
 
         private const val UPSERT = """
