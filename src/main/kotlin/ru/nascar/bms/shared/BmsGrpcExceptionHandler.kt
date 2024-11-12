@@ -28,7 +28,7 @@ class BmsGrpcExceptionHandler {
     @GrpcExceptionHandler(RuntimeException::class)
     fun handleException(exception: RuntimeException): StatusRuntimeException {
         val error = BmsError.newBuilder()
-            .setMessage(exception.message)
+            .setMessage(exception.message ?: "unknown")
             .setBmsErrorCode(BmsErrorCode.UNKNOWN)
             .build()
 
@@ -37,7 +37,6 @@ class BmsGrpcExceptionHandler {
     }
 
     private fun getStatusRuntimeException(error: BmsError): StatusRuntimeException {
-
         val status = Status.newBuilder()
             .setMessage(error.message)
             .setCode(Code.ABORTED.number)
