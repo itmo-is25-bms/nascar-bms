@@ -33,6 +33,14 @@ class JdbcEventBarReviewRepository(
             where br.event_id = :event_id
         """
 
+        private const val SELECT_BY_EVENT_BAR_AND_USER = """
+            $SELECT
+            where br.event_id = :event_id
+                and br.bar_id = :bar_id
+                and br.created_by = :user_id
+        """
+
+
         private const val UPSERT = """
             insert into bar_reviews (id, event_id, bar_id, score, comment, created_by, created_at)
             values (:id, :event_id, :bar_id, :score, :comment, :created_by, :created_at)
@@ -68,6 +76,22 @@ class JdbcEventBarReviewRepository(
         )
 
         return eventBarReviewsDb.map { eventBarReviewDb -> createEventBarReview(eventBarReviewDb) }
+    }
+
+    override fun findByEventBarAndUser(eventId: String, barId: String, userId: String): EventBarReview? {
+        val params = mapOf(
+            "event_id" to eventId,
+            "bar_id" to barId,
+            "user_id" to userId
+        )
+
+        val eventBarReviewsDb = jdbcTemplate.query(
+            SELECT_BY_EVENT_BAR_AND_USER,
+            params,
+            EVENT_BAR_REVIEW_ENTITY_MAPPER
+        )
+
+        return eventBarReviewsDb.map { eventBarReviewDb -> createEventBarReview(eventBarReviewDb) }.firstOrNull()
     }
 
     override fun saveAllFromEvent(event: Event) {

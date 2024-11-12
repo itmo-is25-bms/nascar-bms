@@ -1,4 +1,4 @@
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.id
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -34,6 +34,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+	implementation("org.springframework.boot:spring-boot-starter-actuator:3.3.5")
+	implementation("org.springframework.retry:spring-retry:2.0.10")
+	implementation("org.springframework:spring-aspects:6.1.14")
+
 
 	// grpc
 	implementation("net.devh:grpc-spring-boot-starter:2.14.0.RELEASE")

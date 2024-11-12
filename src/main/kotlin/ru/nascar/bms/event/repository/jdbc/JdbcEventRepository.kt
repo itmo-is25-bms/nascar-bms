@@ -51,7 +51,7 @@ class JdbcEventRepository(
 
         private const val SELECT_BY_ID = """
             $SELECT
-            where ev.id = :id
+            where ev.id in (:ids)
         """
 
         private const val UPSERT = """
@@ -109,17 +109,21 @@ class JdbcEventRepository(
     }
 
     override fun findById(id: String): Event? {
-        val params = mapOf(
-            "id" to id
+        return findByIds(listOf(id)).firstOrNull()
+    }
+
+    override fun findByIds(ids: Collection<String>): List<Event> {
+        if (ids.isEmpty()) {
+            return emptyList()
+        }
+
+        val eventsDb = jdbcTemplate.query(
+            SELECT_BY_ID,
+            mapOf("ids" to ids),
+            EVENT_ENTITY_MAPPER
         )
 
-        val eventDb = jdbcTemplate.query(
-            SELECT_BY_ID,
-            params,
-            EVENT_ENTITY_MAPPER
-        ).firstOrNull()
-
-        return if(eventDb == null) null else createEvent(eventDb)
+        return eventsDb.map { createEvent(it) }
     }
 
     override fun save(event: Event) {

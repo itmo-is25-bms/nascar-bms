@@ -1,8 +1,14 @@
 package ru.nascar.bms.event.service.impl
 
+import org.springframework.dao.DuplicateKeyException
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import ru.nascar.bms.event.domain.exception.ReviewAlreadyExistsException
 import ru.nascar.bms.event.domain.factories.EventBarReviewFactory
 import ru.nascar.bms.event.domain.factories.EventReceiptFactory
+import ru.nascar.bms.event.repository.EventBarReviewRepository
 import ru.nascar.bms.event.repository.EventRepository
 import ru.nascar.bms.event.service.EventActionService
 import ru.nascar.bms.receipt.service.ReceiptService
@@ -12,6 +18,7 @@ import java.time.Clock
 class DefaultEventActionService(
     private val receiptService: ReceiptService,
     private val eventRepository: EventRepository,
+    private val eventBarReviewRepository: EventBarReviewRepository,
     private val clock: Clock,
 ) : EventActionService {
     override fun start(eventId: String, userId: String) {
@@ -39,8 +46,23 @@ class DefaultEventActionService(
         eventRepository.save(event)
     }
 
+    @Transactional
+    @Retryable(
+        value = [DuplicateKeyException::class],
+        backoff = Backoff(value = 100)
+    )
     override fun addReview(eventId: String, barId: String, userId: String, score: Int, reviewText: String) {
-        val event = eventRepository.findById(eventId)!!
+        eventRepository.findById(eventId)!!
+
+        val existingReview = eventBarReviewRepository.findByEventBarAndUser(
+            eventId = eventId,
+            barId = barId,
+            userId = userId
+        )
+
+        if (existingReview != null) {
+            throw ReviewAlreadyExistsException.byEventBarAndUser(eventId, barId, userId)
+        }
 
         val review = EventBarReviewFactory.createNew(
             eventId = eventId,
@@ -50,9 +72,8 @@ class DefaultEventActionService(
             createdBy = userId,
             createdAt = clock.instant(),
         )
-        event.addReview(review)
 
-        eventRepository.save(event)
+        eventBarReviewRepository.save(review)
     }
 
     override fun finish(eventId: String, userId: String) {

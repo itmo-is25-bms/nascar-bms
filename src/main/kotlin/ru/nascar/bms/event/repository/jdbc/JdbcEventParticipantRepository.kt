@@ -32,6 +32,11 @@ class JdbcEventParticipantRepository(
             where evp.event_id = :event_id
         """
 
+        private const val SELECT_BY_USER_ID = """
+            $SELECT
+            where evp.user_id = :user_id
+        """
+
         private const val UPSERT = """
             insert into event_participants (id, event_id, user_id, joined_at, created_by, created_at)
             values (:id, :event_id, :user_id, :joined_at, :created_by, :created_at)
@@ -61,6 +66,20 @@ class JdbcEventParticipantRepository(
 
         val eventParticipantsDb = jdbcTemplate.query(
             SELECT_BY_EVENT_ID,
+            params,
+            EVENT_PARTICIPANT_ENTITY_MAPPER
+        )
+
+        return eventParticipantsDb.map { eventParticipantDb -> createEventParticipant(eventParticipantDb) }
+    }
+
+    override fun findAllByUserId(userId: String): List<EventParticipant> {
+        val params = mapOf(
+            "user_id" to userId
+        )
+
+        val eventParticipantsDb = jdbcTemplate.query(
+            SELECT_BY_USER_ID,
             params,
             EVENT_PARTICIPANT_ENTITY_MAPPER
         )
