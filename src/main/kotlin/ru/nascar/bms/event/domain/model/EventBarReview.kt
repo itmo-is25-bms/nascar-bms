@@ -19,6 +19,6 @@ class EventBarReview(
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        return "$eventId$barId$createdBy".hashCode()
     }
 }

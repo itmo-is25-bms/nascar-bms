@@ -18,6 +18,6 @@ class EventReceipt(
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        return "$eventId$barId$receiptId".hashCode()
     }
 }
