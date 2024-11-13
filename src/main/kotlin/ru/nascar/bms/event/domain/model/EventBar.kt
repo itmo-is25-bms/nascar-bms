@@ -17,6 +17,6 @@ class EventBar(
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        return "$eventId$barId".hashCode()
     }
 }

@@ -18,6 +18,6 @@ class EventParticipant(
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        return "$eventId$userId".hashCode()
     }
 }
