@@ -1,6 +1,7 @@
 package ru.nascar.bms.event.domain.model
 
 import java.time.Instant
+import java.util.Objects
 
 class EventBar(
     val id: String,
@@ -17,6 +18,6 @@ class EventBar(
     }
 
     override fun hashCode(): Int {
-        return "$eventId$barId".hashCode()
+        return Objects.hash(eventId, barId)
     }
 }

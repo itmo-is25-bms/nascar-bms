@@ -1,6 +1,7 @@
 package ru.nascar.bms.event.domain.model
 
 import java.time.Instant
+import java.util.Objects
 
 class EventParticipant(
     val id: String,
@@ -18,6 +19,6 @@ class EventParticipant(
     }
 
     override fun hashCode(): Int {
-        return "$eventId$userId".hashCode()
+        return Objects.hash(eventId, userId)
     }
 }
