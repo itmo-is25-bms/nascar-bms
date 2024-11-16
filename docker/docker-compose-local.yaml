@@ -16,7 +16,7 @@ services:
     container_name: bms_app
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
       args:
         DB_URL: ${DB_URL}
         PG_USER: ${DB_USER}
