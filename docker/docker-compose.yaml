@@ -1,6 +1,7 @@
 services:
   bms:
     container_name: bms_app
+    restart: always
     env_file:
       - .env
     build:
