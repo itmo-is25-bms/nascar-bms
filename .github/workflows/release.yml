@@ -38,14 +38,14 @@ jobs:
       -
         name: Build gradle image
         run: |
-          ./gradlew bootBuildImage --imageName=${{ env.IMAGE_NAME }}
+          ./gradlew bootBuildImage --imageName=${{ steps.meta.outputs.tags[0] }}
 
       -
         name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags[0] }}
           labels: ${{ steps.meta.outputs.labels }}
 
   ansible:
