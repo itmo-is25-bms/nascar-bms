@@ -45,14 +45,14 @@ jobs:
       -
         name: Build gradle image
         run: |
-          ./gradlew bootBuildImage --imageName=${{ steps.meta.outputs.version }}
+          ./gradlew bootBuildImage --imageName=${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
 
       -
         name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.version }}
+          tags: ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
 
   ansible:
