@@ -1,0 +1,13 @@
+services:
+  bms:
+    container_name: bms_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DB_URL: ${DB_URL}
+        PG_USER: ${DB_USER}
+        PG_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8000:8000"
+    env_file: "bms.local.env"

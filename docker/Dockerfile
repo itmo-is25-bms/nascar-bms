@@ -5,7 +5,7 @@ FROM amazoncorretto:17-alpine-jdk
 WORKDIR /app
 
 # Copy all the files from the current directory to the image
-COPY . .
+COPY .. .
 
 RUN apk add libstdc++
 RUN apk add gcompat
