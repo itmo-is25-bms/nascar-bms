@@ -13,7 +13,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     outputs:
-      image_tags: ${{ steps.meta.outputs.tags }}
+      image_tags: ${{ steps.meta.outputs }}
     steps:
       -
         name: Checkout
@@ -48,15 +48,13 @@ jobs:
           ./gradlew bootBuildImage --imageName=${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
 
       -
-        name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
-          labels: ${{ steps.meta.outputs.labels }}
+        name: Push image
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
 
   ansible:
     runs-on: ubuntu-latest
     needs: docker
     steps:
-      - run: echo '${{ toJSON(needs.docker.outputs) }}'
+      - run: echo '${{ toJSON(needs.docker.outputs.image_tags.version) }}'
