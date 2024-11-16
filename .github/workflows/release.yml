@@ -32,20 +32,27 @@ jobs:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
       -
+        name: Set Java to 17 version
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '17'
+
+      -
         name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
       -
         name: Build gradle image
         run: |
-          ./gradlew bootBuildImage --imageName=${{ steps.meta.outputs.tags[0] }}
+          ./gradlew bootBuildImage --imageName=${{ steps.meta.outputs.version }}
 
       -
         name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags[0] }}
+          tags: ${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
 
   ansible:
