@@ -13,7 +13,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     outputs:
-      - image_tags: ${{ steps.meta.outputs.tags[0] }}
+      image_tags: ${{ steps.meta.outputs.tags }}
     steps:
       -
         name: Checkout
