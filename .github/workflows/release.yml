@@ -21,7 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: "$IMAGE_NAME"
+          images: ${{ env.IMAGE_NAME }}
       -
         name: Login to Yandex Cloud Container Registry
         id: login-cr
