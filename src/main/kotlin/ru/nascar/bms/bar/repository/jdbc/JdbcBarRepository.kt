@@ -31,6 +31,12 @@ class JdbcBarRepository(
             where b.id = :id
         """
 
+        private const val SELECT_BY_NAME_AND_ADDRESS = """
+            $SELECT
+            where b.name = :name
+                and b.address = :address
+        """
+
         private const val UPSERT = """
             insert into bars (id, name, address, created_by, created_at, updated_by, updated_at)
             values (:id, :name, :address, :user, :now, :user, :now)
@@ -57,19 +63,25 @@ class JdbcBarRepository(
     override fun findAll(): List<BarEntity> {
         return jdbcTemplate.query(
             SELECT,
-            emptyMap<String, Any>(),
             BAR_MAPPER
         )
     }
 
     override fun findById(id: String): BarEntity? {
-        val params = mapOf(
-            "id" to id
-        )
-
         return jdbcTemplate.query(
             SELECT_BY_ID,
-            params,
+            mapOf("id" to id),
+            BAR_MAPPER
+        ).firstOrNull()
+    }
+
+    override fun findByNameAndAddress(name: String, address: String): BarEntity? {
+        return jdbcTemplate.query(
+            SELECT_BY_NAME_AND_ADDRESS,
+            mapOf(
+                "name" to name,
+                "address" to address
+            ),
             BAR_MAPPER
         ).firstOrNull()
     }

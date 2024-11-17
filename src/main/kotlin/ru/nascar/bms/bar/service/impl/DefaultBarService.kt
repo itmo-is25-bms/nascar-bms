@@ -1,6 +1,10 @@
 package ru.nascar.bms.bar.service.impl
 
+import org.springframework.dao.DuplicateKeyException
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import ru.nascar.bms.bar.domain.exception.BarAlreadyExistsException
 import ru.nascar.bms.bar.domain.exception.BarNotFoundException
 import ru.nascar.bms.bar.domain.model.Bar
 import ru.nascar.bms.bar.repository.BarRepository
@@ -15,7 +19,16 @@ class DefaultBarService(
     private val barRepository: BarRepository,
     private val clock: Clock,
 ) : BarService {
+
+    @Retryable(
+        value = [
+            DuplicateKeyException::class
+        ],
+    )
+    @Transactional
     override fun create(userId: String, name: String, address: String): Bar {
+        validateNoBarWithNameAndAddressExists(name, address)
+
         val barId = "bar-" + UUID.randomUUID().toString()
         val barEntity = BarEntity(
             id = barId,
@@ -28,6 +41,14 @@ class DefaultBarService(
         barRepository.save(barEntity)
 
         return barEntity.toDomainModel()
+    }
+
+    private fun validateNoBarWithNameAndAddressExists(name: String, address: String) {
+        val existingBar = barRepository.findByNameAndAddress(name, address)
+
+        if (existingBar != null) {
+            throw BarAlreadyExistsException.withNameAndAddress(name, address)
+        }
     }
 
     override fun getById(id: String): Bar {
