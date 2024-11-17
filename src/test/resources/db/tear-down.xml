@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
 <dataset>
+    <event_bars/>
+    <bar_reviews/>
+    <event_participants/>
+    <event_receipts/>
+    <receipts/>
     <events/>
     <bars/>
-    <event_participants/>
-    <bar_reviews/>
-    <receipts/>
-    <event_receipts/>
 </dataset>
