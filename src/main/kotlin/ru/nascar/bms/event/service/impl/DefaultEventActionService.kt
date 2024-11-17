@@ -18,7 +18,6 @@ import java.time.Clock
 class DefaultEventActionService(
     private val receiptService: ReceiptService,
     private val eventRepository: EventRepository,
-    private val eventBarReviewRepository: EventBarReviewRepository,
     private val clock: Clock,
 ) : EventActionService {
     override fun start(eventId: String, userId: String) {
@@ -31,6 +30,9 @@ class DefaultEventActionService(
 
     override fun addReceipt(eventId: String, barId: String, userId: String, receiptData: ByteArray) {
         val event = eventRepository.findById(eventId)!!
+
+        // To not create data in receipts
+        event.ensureHasNoReceiptForBar(barId = barId)
 
         val receipt = receiptService.create(receiptData = receiptData, createdBy = userId)
         val eventReceipt = EventReceiptFactory.createNew(
@@ -52,17 +54,7 @@ class DefaultEventActionService(
         backoff = Backoff(value = 100)
     )
     override fun addReview(eventId: String, barId: String, userId: String, score: Int, reviewText: String) {
-        eventRepository.findById(eventId)!!
-
-        val existingReview = eventBarReviewRepository.findByEventBarAndUser(
-            eventId = eventId,
-            barId = barId,
-            userId = userId
-        )
-
-        if (existingReview != null) {
-            throw ReviewAlreadyExistsException.byEventBarAndUser(eventId, barId, userId)
-        }
+        val event = eventRepository.findById(eventId)!!
 
         val review = EventBarReviewFactory.createNew(
             eventId = eventId,
@@ -72,8 +64,9 @@ class DefaultEventActionService(
             createdBy = userId,
             createdAt = clock.instant(),
         )
+        event.addReview(review)
 
-        eventBarReviewRepository.save(review)
+        eventRepository.save(event)
     }
 
     override fun finish(eventId: String, userId: String) {
