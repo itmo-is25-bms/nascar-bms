@@ -48,8 +48,8 @@ class DefaultEventActionService(
 
     @Transactional
     @Retryable(
-        value = [DuplicateKeyException::class],
-        backoff = Backoff(value = 100)
+        include = [DuplicateKeyException::class],
+        backoff = Backoff(random = true, delay = 50, maxDelay = 200)
     )
     override fun addReview(eventId: String, barId: String, userId: String, score: Int, reviewText: String) {
         eventRepository.findById(eventId)!!
