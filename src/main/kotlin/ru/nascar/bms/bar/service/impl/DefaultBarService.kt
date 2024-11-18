@@ -1,6 +1,7 @@
 package ru.nascar.bms.bar.service.impl
 
 import org.springframework.dao.DuplicateKeyException
+import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,9 +22,8 @@ class DefaultBarService(
 ) : BarService {
 
     @Retryable(
-        value = [
-            DuplicateKeyException::class
-        ],
+        include = [DuplicateKeyException::class],
+        backoff = Backoff(random = true, delay = 50, maxDelay = 200)
     )
     @Transactional
     override fun create(userId: String, name: String, address: String): Bar {
