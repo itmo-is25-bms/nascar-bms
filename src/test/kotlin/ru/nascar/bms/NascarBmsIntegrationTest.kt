@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 import ru.nascar.bms.presentation.abstractions.BarServiceGrpc
 import ru.nascar.bms.presentation.abstractions.EventActionServiceGrpc
 import ru.nascar.bms.presentation.abstractions.EventServiceGrpc
+import ru.nascar.bms.utils.GrpcAssertions
 import java.time.Clock
 
 @SpringBootTest(
@@ -43,16 +44,24 @@ import java.time.Clock
     type = DatabaseOperation.DELETE_ALL
 )
 class NascarBmsIntegrationTest {
+    protected val grpcAssert = GrpcAssertions()
+
     @Autowired
     protected lateinit var clock: Clock
+
     @GrpcClient("barService")
     protected lateinit var barServiceGrpc: BarServiceGrpc.BarServiceBlockingStub
+
     @GrpcClient("eventService")
     protected lateinit var eventServiceGrpc: EventServiceGrpc.EventServiceBlockingStub
+
     @GrpcClient("eventActionService")
     protected lateinit var eventActionServiceGrpc: EventActionServiceGrpc.EventActionServiceBlockingStub
 
     companion object {
         const val USER_ID = "testUser"
+        const val BAR_ID = "BAR-01"
+        const val BAR_NAME = "Рядом"
+        const val BAR_ADDRESS = "Гороховая, 32"
     }
 }
