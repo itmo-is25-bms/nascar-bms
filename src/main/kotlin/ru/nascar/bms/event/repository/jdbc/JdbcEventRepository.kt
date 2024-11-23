@@ -74,7 +74,7 @@ class JdbcEventRepository(
                 startDateTime = rs.getUtcInstant("start_datetime"),
                 createdBy = rs.getString("created_by"),
                 createdAt = rs.getUtcInstant("created_at"),
-                updatedBy = rs.getString("updated_at"),
+                updatedBy = rs.getString("updated_by"),
                 updatedAt = rs.getUtcInstant("updated_at"),
             )
         }
