@@ -11,18 +11,17 @@ class GrpcAssertions {
         private val IGNORED_FIELDS_WITH_ID = IGNORED_FIELDS + "id_"
     }
 
-    fun <T> assertProtoEquals(expected: T, actual: T, additionalFieldsToIgnore: Array<String> = emptyArray()) {
-        assertEquals(expected, actual, IGNORED_FIELDS + additionalFieldsToIgnore)
+    fun <T> assertProtoEquals(expected: T, actual: T) {
+        assertEquals(expected, actual, IGNORED_FIELDS)
     }
 
-    fun <T> assertProtoEqualsIgnoringId(expected: T, actual: T, additionalFieldsToIgnore: Array<String> = emptyArray()) {
-        assertEquals(expected, actual, IGNORED_FIELDS_WITH_ID + additionalFieldsToIgnore)
+    fun <T> assertProtoEqualsIgnoringId(expected: T, actual: T) {
+        assertEquals(expected, actual, IGNORED_FIELDS_WITH_ID)
     }
 
     private fun <T> assertEquals(expected: T, actual: T, ignoredFields: Array<String>) {
         assertThat(actual).usingRecursiveComparison()
             .ignoringFields(*ignoredFields)
-            .ignoringCollectionOrder()
             .isEqualTo(expected)
     }
 
