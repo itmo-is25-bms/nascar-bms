@@ -60,8 +60,5 @@ class NascarBmsIntegrationTest {
 
     companion object {
         const val USER_ID = "testUser"
-        const val BAR_ID = "BAR-01"
-        const val BAR_NAME = "Рядом"
-        const val BAR_ADDRESS = "Гороховая, 32"
     }
 }
