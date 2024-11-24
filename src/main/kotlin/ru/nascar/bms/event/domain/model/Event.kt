@@ -74,8 +74,16 @@ class Event(
         updatedAt = finishedAt
     }
 
-    fun ensureHasNoReceiptForBar(barId: String) {
+    fun ensureCanAddReceiptForBar(barId: String) {
         ensureValidBarId(barId)
+
+        if (status != EventStatus.FINISHED) {
+            throw InvalidEventStatusException.create(
+                eventId = id,
+                eventStatus = status,
+                actionName = "AddReceipt"
+            )
+        }
 
         if (receipts.any { receipt -> receipt.barId == barId}) {
             throw ReceiptAlreadyExistsException.create(eventId = id, barId = barId)
@@ -85,7 +93,7 @@ class Event(
     fun addReceipt(receipt: EventReceipt) {
         ensureValidEventId(receipt.eventId)
         ensureValidParticipantId(receipt.createdBy)
-        ensureHasNoReceiptForBar(barId = receipt.barId)
+        ensureCanAddReceiptForBar(barId = receipt.barId)
 
         receipts = receipts.plus(receipt)
     }

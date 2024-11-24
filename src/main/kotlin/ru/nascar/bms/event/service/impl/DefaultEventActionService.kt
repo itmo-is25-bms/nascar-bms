@@ -30,7 +30,7 @@ class DefaultEventActionService(
         val event = eventRepository.getById(eventId)
 
         // To not create data in receipts
-        event.ensureHasNoReceiptForBar(barId = barId)
+        event.ensureCanAddReceiptForBar(barId = barId)
 
         val receipt = receiptService.create(receiptData = receiptData, createdBy = userId)
         val eventReceipt = EventReceiptFactory.createNew(
