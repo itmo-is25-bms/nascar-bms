@@ -14,6 +14,8 @@ enum class EventErrorCode : BmsErrorCode {
     INVALID_EVENT_STATUS_IN_PROGRESS,
     INVALID_EVENT_STATUS_FINISHED,
     EVENT_NOT_FOUND,
+    EVENT_BARS_NOT_FOUND_BY_IDS,
+    EVENT_AUTHOR_REMOVAL,
     ;
 
     override val code: String = name

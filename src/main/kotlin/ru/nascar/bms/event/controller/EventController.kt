@@ -5,7 +5,18 @@ import ru.nascar.bms.event.controller.mapping.toDto
 import ru.nascar.bms.event.controller.mapping.toInstant
 import ru.nascar.bms.event.service.EventService
 import ru.nascar.bms.presentation.abstractions.EventServiceGrpcKt
-import ru.nascar.bms.presentation.abstractions.EventServiceProto.*
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.AddUserToEventCommand
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.AddUserToEventCommandResponse
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.CreateCommand
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.CreateCommandResponse
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.GetByIdQuery
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.GetByIdQueryResponse
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.GetByPasscodeQuery
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.GetByPasscodeQueryResponse
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.GetByUserIdQuery
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.GetByUserIdQueryResponse
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.RemoveUserFromEventCommand
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.RemoveUserFromEventCommandResponse
 
 @GrpcService
 class EventController(
@@ -16,7 +27,7 @@ class EventController(
             userId = request.userId,
             name = request.event.name,
             startDatetime = request.event.startDate.toInstant(),
-            eventBarsIds = request.event.barIdsList,
+            eventBarsIds = HashSet(request.event.barIdsList),
         )
 
         val eventDto = eventInternal.toDto()
@@ -33,7 +44,7 @@ class EventController(
     }
 
     override suspend fun getByPasscode(request: GetByPasscodeQuery): GetByPasscodeQueryResponse {
-        val eventInternal = eventService.getByPasscode(request.passcode)
+        val eventInternal = eventService.findByPasscode(request.passcode)
 
         val eventDto = eventInternal?.toDto()
 
@@ -46,7 +57,7 @@ class EventController(
     override suspend fun getByUserId(request: GetByUserIdQuery): GetByUserIdQueryResponse {
         val eventsInternal = eventService.getByUserId(request.userId)
 
-        val eventsDto = eventsInternal.map { eventInternal -> eventInternal.toDto() }
+        val eventsDto = eventsInternal.map { it.toDto() }
 
         return GetByUserIdQueryResponse.newBuilder().addAllEvents(eventsDto).build()
     }

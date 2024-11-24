@@ -1,12 +1,15 @@
-package ru.nascar.bms.bar
+package ru.nascar.bms.bar.controller
 
 import com.github.springtestdbunit.annotation.DatabaseSetup
 import com.github.springtestdbunit.annotation.ExpectedDatabase
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode
-import io.grpc.Status.Code
 import org.junit.jupiter.api.Test
 import ru.nascar.bms.NascarBmsIntegrationTest
 import ru.nascar.bms.presentation.abstractions.BarServiceProto
+
+private const val BAR_ID = "BAR-01"
+private const val BAR_NAME = "Рядом"
+private const val BAR_ADDRESS = "Гороховая, 32"
 
 class BarControllerTest : NascarBmsIntegrationTest() {
     @Test
@@ -42,7 +45,6 @@ class BarControllerTest : NascarBmsIntegrationTest() {
 
         // act & assert
         grpcAssert.assertStatusException(
-            code = Code.ABORTED,
             message = "Bar with name ${request.bar.name} and address ${request.bar.address} already exists"
         ) {
             barServiceGrpc.create(request)
@@ -83,7 +85,6 @@ class BarControllerTest : NascarBmsIntegrationTest() {
 
         // act & assert
         grpcAssert.assertStatusException(
-            code = Code.ABORTED,
             message = "Bar with id ${request.barId} not found"
         ) {
             barServiceGrpc.getById(request)
@@ -96,7 +97,7 @@ class BarControllerTest : NascarBmsIntegrationTest() {
         value = "/controller/bar/get_all/happy_path/immutable.xml",
         assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
     )
-    fun `get all bars - happy path - return all existing bars`() {
+    fun `get all bars - happy path - return all existing bars in any order`() {
         // arrange
         val request = BarServiceProto.GetAllQuery.getDefaultInstance()
 

@@ -15,7 +15,7 @@ class EventFactory {
             name: String,
             passcode: String,
             startDateTime: Instant,
-            eventBarsIds: List<String>,
+            eventBarsIds: Set<String>,
             createdBy: String,
             createdAt: Instant,
         ): Event {
@@ -26,12 +26,14 @@ class EventFactory {
                 createdAt = createdAt,
                 createdBy = createdBy
             )
-            val eventBars = eventBarsIds.map { barId -> EventBarFactory.createNew(
-                eventId = id,
-                barId = barId,
-                createdBy = createdBy,
-                createdAt = createdAt,
-            ) }
+            val eventBars = eventBarsIds.map { barId ->
+                EventBarFactory.createNew(
+                    eventId = id,
+                    barId = barId,
+                    createdBy = createdBy,
+                    createdAt = createdAt,
+                )
+            }
             return Event(
                 id = id,
                 name = name,
@@ -40,8 +42,8 @@ class EventFactory {
                 startDateTime = startDateTime,
                 eventBars = eventBars,
                 participants = listOf(author),
-                receipts = listOf(),
-                reviews = listOf(),
+                receipts = emptyList(),
+                reviews = emptyList(),
                 createdAt = createdAt,
                 createdBy = createdBy,
                 updatedAt = createdAt,

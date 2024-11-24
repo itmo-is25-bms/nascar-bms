@@ -1,6 +1,9 @@
 package ru.nascar.bms.event.service.impl
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import ru.nascar.bms.bar.service.BarService
+import ru.nascar.bms.event.domain.exception.EventBarsNotFoundException
 import ru.nascar.bms.event.domain.factories.EventFactory
 import ru.nascar.bms.event.domain.factories.EventParticipantFactory
 import ru.nascar.bms.event.repository.EventParticipantRepository
@@ -13,11 +16,15 @@ import java.util.UUID
 
 @Service
 class DefaultEventService(
+    private val barService: BarService,
     private val eventRepository: EventRepository,
     private val eventParticipantRepository: EventParticipantRepository,
     private val clock: Clock,
 ) : EventService {
-    override fun create(userId: String, name: String, startDatetime: Instant, eventBarsIds: List<String>): EventInternal {
+    @Transactional
+    override fun create(userId: String, name: String, startDatetime: Instant, eventBarsIds: Set<String>): EventInternal {
+        validateAllBarsExist(eventBarsIds)
+
         val passcode = UUID.randomUUID().toString()
         val event = EventFactory.createNew(
             name = name,
@@ -33,12 +40,21 @@ class DefaultEventService(
         return EventInternal.fromDomain(event)
     }
 
+    private fun validateAllBarsExist(barIds: Set<String>) {
+        val existentBarIds = barService.findByIds(barIds).mapTo(HashSet()) { it.id }
+        val nonExistentBarIds = barIds - existentBarIds
+
+        if (nonExistentBarIds.isNotEmpty()) {
+            throw EventBarsNotFoundException.forBarIds(nonExistentBarIds)
+        }
+    }
+
     override fun getById(id: String): EventInternal {
         val event = eventRepository.getById(id)
         return EventInternal.fromDomain(event)
     }
 
-    override fun getByPasscode(passcode: String): EventInternal? {
+    override fun findByPasscode(passcode: String): EventInternal? {
         val event = eventRepository.findByPasscode(passcode)
         return if (event == null) null else EventInternal.fromDomain(event)
     }
@@ -49,6 +65,7 @@ class DefaultEventService(
         return events.map { event -> EventInternal.fromDomain(event) }
     }
 
+    @Transactional
     override fun addUserToEvent(id: String, userId: String) {
         val event = eventRepository.getById(id)
         val user = EventParticipantFactory.createNew(
@@ -63,6 +80,7 @@ class DefaultEventService(
         eventRepository.save(event)
     }
 
+    @Transactional
     override fun removeUserFromEvent(id: String, userId: String) {
         val event = eventRepository.getById(id)
         val user = EventParticipantFactory.createNew(

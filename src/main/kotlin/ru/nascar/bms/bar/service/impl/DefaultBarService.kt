@@ -56,7 +56,11 @@ class DefaultBarService(
     }
 
     private fun findById(id: String): Bar? {
-        return barRepository.findById(id)?.toDomainModel()
+        return findByIds(setOf(id)).firstOrNull()
+    }
+
+    override fun findByIds(barIds: Set<String>): List<Bar> {
+        return barRepository.findByIds(barIds).map { it.toDomainModel() }
     }
 
     override fun getAll(): List<Bar> {
