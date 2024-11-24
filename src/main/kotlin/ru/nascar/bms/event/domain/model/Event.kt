@@ -43,7 +43,6 @@ class Event(
     }
 
     fun start(startedBy: String, startedAt: Instant) {
-        ensureValidParticipantId(startedBy)
         ensureUserIsAuthor(startedBy)
 
         if (status != EventStatus.CREATED) {
@@ -60,7 +59,6 @@ class Event(
     }
 
     fun finish(finishedBy: String, finishedAt: Instant) {
-        ensureValidParticipantId(finishedBy)
         ensureUserIsAuthor(finishedBy)
 
         if (status != EventStatus.IN_PROGRESS) {
@@ -76,7 +74,7 @@ class Event(
         updatedAt = finishedAt
     }
 
-    fun ensureCanAddReceiptForBar(barId: String) {
+    private fun ensureCanAddReceiptForBar(barId: String) {
         ensureValidBarId(barId)
 
         if (status != EventStatus.FINISHED) {

@@ -3,7 +3,14 @@ package ru.nascar.bms.event.controller
 import net.devh.boot.grpc.server.service.GrpcService
 import ru.nascar.bms.event.service.EventActionService
 import ru.nascar.bms.presentation.abstractions.EventActionServiceGrpcKt
-import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.*
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.AddReceiptCommand
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.AddReceiptCommandResponse
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.AddReviewCommand
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.AddReviewCommandResponse
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.FinishCommand
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.FinishCommandResponse
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.StartCommand
+import ru.nascar.bms.presentation.abstractions.EventActionServiceProto.StartCommandResponse
 
 @GrpcService
 class EventActionController(
@@ -30,7 +37,7 @@ class EventActionController(
             barId = request.barId,
             userId = request.userId,
             score = request.review.score,
-            reviewText = if (request.review.hasReviewText()) request.review.reviewText else ""
+            reviewText = request.review.reviewText
         )
         return AddReviewCommandResponse.getDefaultInstance()
     }
