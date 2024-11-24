@@ -10,15 +10,24 @@ class InvalidEventStatusException(
 ): BmsException(message, errorCode, errorData) {
     companion object {
         fun create(eventId: String, eventStatus: EventStatus, actionName: String): InvalidEventStatusException {
+            val errorCode = statusToErrorCode(eventStatus)
             return InvalidEventStatusException(
                 "Can't execute action $actionName on event $eventId while in status $eventStatus",
-                EventErrorCode.INVALID_EVENT_STATUS,
+                errorCode,
                 mapOf(
                     "eventId" to eventId,
-                    "eventStatus" to eventStatus.toString(),
+                    "eventStatus" to eventStatus.name,
                     "actionName" to actionName,
                 )
             )
+        }
+
+        private fun statusToErrorCode(eventStatus: EventStatus): EventErrorCode {
+            return when(eventStatus) {
+                EventStatus.CREATED -> EventErrorCode.INVALID_EVENT_STATUS_CREATED
+                EventStatus.IN_PROGRESS -> EventErrorCode.INVALID_EVENT_STATUS_IN_PROGRESS
+                EventStatus.FINISHED -> EventErrorCode.INVALID_EVENT_STATUS_FINISHED
+            }
         }
     }
 }
