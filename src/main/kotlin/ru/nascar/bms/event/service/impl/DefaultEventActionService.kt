@@ -31,9 +31,6 @@ class DefaultEventActionService(
     override fun addReceipt(eventId: String, barId: String, userId: String, receiptData: ByteArray) {
         val event = eventRepository.getById(eventId)
 
-        // To not create data in receipts
-        event.ensureCanAddReceiptForBar(barId = barId)
-
         val receipt = receiptService.create(receiptData = receiptData, createdBy = userId)
         val eventReceipt = EventReceiptFactory.createNew(
             eventId = event.id,

@@ -1,0 +1,18 @@
+<dataset>
+    <bars id="BAR-00" name="Laboratorio Distilita" address="Гражданская, 13-15" created_by="testUser" updated_by="testUser"/>
+    <bars id="BAR-01" name="Рядом" address="Гороховая, 32" created_by="testUser" updated_by="testUser"/>
+
+    <events id="EVENT-01" name="ITMOtion Night" status="FINISHED" start_datetime="2025-10-10 11:11:11.111 +0000" passcode="M34021" created_by="testUser" updated_by="testUser" updated_at="2023-10-10 11:11:11.111 +0000"/>
+    <event_participants id="EP-01" event_id="EVENT-01" user_id="testUser" created_by="testUser"/>
+    <event_participants id="EP-02" event_id="EVENT-01" user_id="kslacker" created_by="kslacker"/>
+    <event_bars id="EB-01" event_id="EVENT-01" bar_id="BAR-00" created_by="testUser"/>
+    <event_bars id="EB-02" event_id="EVENT-01" bar_id="BAR-01" created_by="testUser"/>
+    <receipts id="RECEIPT-01" receipt_data="0xDEADBEEF" created_by="testUser"/>
+    <event_receipts id="ERT-01" receipt_id="RECEIPT-01" event_id="EVENT-01" bar_id="BAR-01" created_by="testUser"/>
+
+    <bar_reviews event_id="EVENT-01" bar_id="BAR-01" score="4" comment="Очень очень affordable" created_by="testUser"/>
+
+    <events id="EVENT-02" name="Новый год" status="CREATED" start_datetime="2025-01-01 00:00:00.000 +0000" passcode="DED_MOROZ" created_by="suren" updated_by="suren" updated_at="2023-10-10 11:11:11.111 +0000"/>
+    <event_participants id="EP-03" event_id="EVENT-02" user_id="kslacker" created_by="kslacker"/>
+    <event_bars id="EB-03" event_id="EVENT-02" bar_id="BAR-00" created_by="testUser"/>
+</dataset>

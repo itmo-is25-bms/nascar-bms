@@ -8,10 +8,15 @@ class EventBarReview(
     val eventId: String,
     val barId: String,
     val score: Int,
-    val comment: String,
+    val comment: String?,
     val createdBy: String,
     val createdAt: Instant,
 ) {
+    companion object {
+        const val MIN_SCORE = 1
+        const val MAX_SCORE = 5
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is EventBarReview) return false

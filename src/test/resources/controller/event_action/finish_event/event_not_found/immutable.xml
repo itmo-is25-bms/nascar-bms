@@ -1,0 +1,8 @@
+<dataset>
+    <bars id="BAR-00" name="Laboratorio Distilita" address="Гражданская, 13-15" created_by="testUser" updated_by="testUser"/>
+    <bars id="BAR-01" name="Рядом" address="Гороховая, 32" created_by="testUser" updated_by="testUser"/>
+
+    <events id="EVENT-02" name="Новый год" status="CREATED" start_datetime="2025-01-01 00:00:00.000 +0000" passcode="DED_MOROZ" created_by="suren" updated_by="suren"/>
+    <event_participants id="EP-03" event_id="EVENT-02" user_id="kslacker" created_by="kslacker"/>
+    <event_bars id="EB-03" event_id="EVENT-02" bar_id="BAR-00" created_by="testUser"/>
+</dataset>
