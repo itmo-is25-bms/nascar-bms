@@ -5,10 +5,8 @@ import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.nascar.bms.event.domain.exception.ReviewAlreadyExistsException
 import ru.nascar.bms.event.domain.factories.EventBarReviewFactory
 import ru.nascar.bms.event.domain.factories.EventReceiptFactory
-import ru.nascar.bms.event.repository.EventBarReviewRepository
 import ru.nascar.bms.event.repository.EventRepository
 import ru.nascar.bms.event.service.EventActionService
 import ru.nascar.bms.receipt.service.ReceiptService
@@ -21,7 +19,7 @@ class DefaultEventActionService(
     private val clock: Clock,
 ) : EventActionService {
     override fun start(eventId: String, userId: String) {
-        val event = eventRepository.findById(eventId)!!
+        val event = eventRepository.getById(eventId)
 
         event.start(startedBy = userId, startedAt = clock.instant())
 
@@ -29,7 +27,7 @@ class DefaultEventActionService(
     }
 
     override fun addReceipt(eventId: String, barId: String, userId: String, receiptData: ByteArray) {
-        val event = eventRepository.findById(eventId)!!
+        val event = eventRepository.getById(eventId)
 
         // To not create data in receipts
         event.ensureHasNoReceiptForBar(barId = barId)
@@ -54,7 +52,7 @@ class DefaultEventActionService(
         backoff = Backoff(value = 100)
     )
     override fun addReview(eventId: String, barId: String, userId: String, score: Int, reviewText: String) {
-        val event = eventRepository.findById(eventId)!!
+        val event = eventRepository.getById(eventId)
 
         val review = EventBarReviewFactory.createNew(
             eventId = eventId,
@@ -70,7 +68,7 @@ class DefaultEventActionService(
     }
 
     override fun finish(eventId: String, userId: String) {
-        val event = eventRepository.findById(eventId)!!
+        val event = eventRepository.getById(eventId)
 
         event.finish(finishedBy = userId, finishedAt = clock.instant())
 

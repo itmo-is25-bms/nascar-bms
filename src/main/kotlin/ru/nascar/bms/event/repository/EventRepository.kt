@@ -6,6 +6,7 @@ interface EventRepository {
     fun findAllByCreatedBy(createdBy: String): List<Event>
     fun findByPasscode(passcode: String): Event?
     fun findById(id: String): Event?
+    fun getById(id: String): Event
     fun findByIds(ids: Collection<String>): List<Event>
     fun save(event: Event)
 }

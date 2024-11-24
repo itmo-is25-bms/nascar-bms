@@ -11,6 +11,7 @@ enum class EventErrorCode : BmsErrorCode {
     UNAUTHORIZED_EVENT_ACTION,
     EVENT_PARTICIPANT_EXISTS,
     INVALID_EVENT_STATUS,
+    EVENT_NOT_FOUND,
     ;
 
     override val code: String = name
