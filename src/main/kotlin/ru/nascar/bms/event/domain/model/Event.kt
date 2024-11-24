@@ -77,7 +77,7 @@ class Event(
     fun ensureHasNoReceiptForBar(barId: String) {
         ensureValidBarId(barId)
 
-        if (!receipts.any { receipt -> receipt.barId == barId}) {
+        if (receipts.any { receipt -> receipt.barId == barId}) {
             throw ReceiptAlreadyExistsException.create(eventId = id, barId = barId)
         }
     }
