@@ -69,8 +69,8 @@ class JdbcEventBarRepository(
     override fun saveAllFromEvent(event: Event) {
         val currentlyExistingInDb = findAllByEventId(event.id)
 
-        val eventBarsToCreate = event.eventBars.filter { eventBar -> eventBar !in currentlyExistingInDb }
-        val eventBarsToDelete = currentlyExistingInDb.filter { eventBar -> eventBar !in event.eventBars }
+        val eventBarsToCreate = event.eventBars.filter { it !in currentlyExistingInDb }
+        val eventBarsToDelete = currentlyExistingInDb.filter { it !in event.eventBars }
 
         // TODO: do in batch + transaction
         eventBarsToCreate.forEach { eventBar -> save(eventBar) }

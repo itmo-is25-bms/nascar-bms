@@ -18,6 +18,7 @@ class DefaultEventActionService(
     private val eventRepository: EventRepository,
     private val clock: Clock,
 ) : EventActionService {
+    @Transactional
     override fun start(eventId: String, userId: String) {
         val event = eventRepository.getById(eventId)
 
@@ -26,6 +27,7 @@ class DefaultEventActionService(
         eventRepository.save(event)
     }
 
+    @Transactional
     override fun addReceipt(eventId: String, barId: String, userId: String, receiptData: ByteArray) {
         val event = eventRepository.getById(eventId)
 
@@ -67,6 +69,7 @@ class DefaultEventActionService(
         eventRepository.save(event)
     }
 
+    @Transactional
     override fun finish(eventId: String, userId: String) {
         val event = eventRepository.getById(eventId)
 

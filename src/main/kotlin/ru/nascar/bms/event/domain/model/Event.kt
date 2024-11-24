@@ -1,6 +1,7 @@
 package ru.nascar.bms.event.domain.model
 
 import ru.nascar.bms.event.domain.exception.BarNotFoundInEventException
+import ru.nascar.bms.event.domain.exception.EventAuthorRemovalException
 import ru.nascar.bms.event.domain.exception.InvalidEventIdException
 import ru.nascar.bms.event.domain.exception.InvalidEventStatusException
 import ru.nascar.bms.event.domain.exception.ReceiptAlreadyExistsException
@@ -30,14 +31,15 @@ class Event(
             throw UserAlreadyExistsException.create(eventId = id, userId = user.userId)
         }
 
-        participants = participants.plus(user)
+        participants += user
     }
 
     fun removeUser(user: EventParticipant) {
-        ensureValidEventId(eventId = user.eventId)
-        ensureValidParticipantId(userId = user.userId)
+        ensureValidEventId(user.eventId)
+        ensureNotAuthorRemoval(user.userId)
+        ensureValidParticipantId(user.userId)
 
-        participants = participants.minus(user)
+        participants -= user
     }
 
     fun start(startedBy: String, startedAt: Instant) {
@@ -85,7 +87,7 @@ class Event(
             )
         }
 
-        if (receipts.any { receipt -> receipt.barId == barId}) {
+        if (receipts.any { it.barId == barId }) {
             throw ReceiptAlreadyExistsException.create(eventId = id, barId = barId)
         }
     }
@@ -93,9 +95,9 @@ class Event(
     fun addReceipt(receipt: EventReceipt) {
         ensureValidEventId(receipt.eventId)
         ensureValidParticipantId(receipt.createdBy)
-        ensureCanAddReceiptForBar(barId = receipt.barId)
+        ensureCanAddReceiptForBar(receipt.barId)
 
-        receipts = receipts.plus(receipt)
+        receipts += receipt
     }
 
     fun addReview(review: EventBarReview) {
@@ -107,7 +109,7 @@ class Event(
             throw ReviewAlreadyExistsException.create(eventId = id, barId = review.barId, userId = review.createdBy)
         }
 
-        reviews = reviews.plus(review)
+        reviews += review
     }
 
     private fun ensureValidEventId(eventId: String) {
@@ -117,13 +119,13 @@ class Event(
     }
 
     private fun ensureValidBarId(barId: String) {
-        if (!eventBars.any { eventBar -> eventBar.barId == barId }) {
+        if (eventBars.none { it.barId == barId }) {
             throw BarNotFoundInEventException.create(eventId = id, barId = barId)
         }
     }
 
     private fun ensureValidParticipantId(userId: String) {
-        if (!participants.any { participant -> participant.userId == userId }) {
+        if (participants.none { it.userId == userId }) {
            throw UserNotFoundInEventException.create(eventId = id, userId = userId)
         }
     }
@@ -131,6 +133,12 @@ class Event(
     private fun ensureUserIsAuthor(userId: String) {
         if (createdBy != userId) {
             throw UnauthorizedEventActionException.create(eventId = id, userId = userId)
+        }
+    }
+
+    private fun ensureNotAuthorRemoval(userId: String) {
+        if (createdBy == userId) {
+            throw EventAuthorRemovalException.forEventAndAuthor(id, userId)
         }
     }
 }

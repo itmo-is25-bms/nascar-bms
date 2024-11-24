@@ -1,9 +1,11 @@
 <dataset>
-    <event_bars/>
-    <bar_reviews/>
-    <event_participants/>
-    <event_receipts/>
+    <!-- DbUnit cleans tables from bottom to top -->
+
     <receipts/>
     <events/>
     <bars/>
+    <bar_reviews/>
+    <event_participants/>
+    <event_receipts/>
+    <event_bars/>
 </dataset>

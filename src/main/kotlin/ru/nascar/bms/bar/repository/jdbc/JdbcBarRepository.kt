@@ -26,9 +26,9 @@ class JdbcBarRepository(
             from bars b
         """
 
-        private const val SELECT_BY_ID = """
+        private const val SELECT_BY_IDS = """
             $SELECT
-            where b.id = :id
+            where b.id in (:ids)
         """
 
         private const val SELECT_BY_NAME_AND_ADDRESS = """
@@ -67,12 +67,16 @@ class JdbcBarRepository(
         )
     }
 
-    override fun findById(id: String): BarEntity? {
+    override fun findByIds(ids: Collection<String>): List<BarEntity> {
+        if (ids.isEmpty()) {
+            return emptyList()
+        }
+
         return jdbcTemplate.query(
-            SELECT_BY_ID,
-            mapOf("id" to id),
+            SELECT_BY_IDS,
+            mapOf("ids" to ids),
             BAR_MAPPER
-        ).firstOrNull()
+        )
     }
 
     override fun findByNameAndAddress(name: String, address: String): BarEntity? {
