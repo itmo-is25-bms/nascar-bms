@@ -15,10 +15,10 @@ class EventReceipt(
         if (this === other) return true
         if (other !is EventReceipt) return false
 
-        return eventId == other.eventId && barId == other.barId && receiptId == other.receiptId
+        return eventId == other.eventId && barId == other.barId
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(eventId, barId, receiptId)
+        return Objects.hash(eventId, barId)
     }
 }

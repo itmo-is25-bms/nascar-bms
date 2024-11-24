@@ -34,8 +34,8 @@ class DefaultEventService(
     }
 
     override fun getById(id: String): EventInternal {
-        val event = eventRepository.findById(id)
-        return EventInternal.fromDomain(event!!)
+        val event = eventRepository.getById(id)
+        return EventInternal.fromDomain(event)
     }
 
     override fun getByPasscode(passcode: String): EventInternal? {
@@ -50,7 +50,7 @@ class DefaultEventService(
     }
 
     override fun addUserToEvent(id: String, userId: String) {
-        val event = eventRepository.findById(id)!!
+        val event = eventRepository.getById(id)
         val user = EventParticipantFactory.createNew(
             eventId = id,
             userId = userId,
@@ -64,7 +64,7 @@ class DefaultEventService(
     }
 
     override fun removeUserFromEvent(id: String, userId: String) {
-        val event = eventRepository.findById(id)!!
+        val event = eventRepository.getById(id)
         val user = EventParticipantFactory.createNew(
             eventId = id,
             userId = userId,

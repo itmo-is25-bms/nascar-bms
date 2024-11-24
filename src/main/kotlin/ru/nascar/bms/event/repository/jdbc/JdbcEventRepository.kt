@@ -3,6 +3,7 @@ package ru.nascar.bms.event.repository.jdbc
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import ru.nascar.bms.event.domain.exception.EventNotFoundException
 import ru.nascar.bms.event.domain.factories.EventFactory
 import ru.nascar.bms.event.domain.model.Event
 import ru.nascar.bms.event.domain.model.EventStatus
@@ -110,6 +111,10 @@ class JdbcEventRepository(
 
     override fun findById(id: String): Event? {
         return findByIds(listOf(id)).firstOrNull()
+    }
+
+    override fun getById(id: String): Event {
+        return findById(id) ?: throw EventNotFoundException.create(eventId = id)
     }
 
     override fun findByIds(ids: Collection<String>): List<Event> {
