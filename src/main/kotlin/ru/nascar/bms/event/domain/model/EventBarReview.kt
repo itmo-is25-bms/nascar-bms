@@ -14,7 +14,7 @@ class EventBarReview(
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is EventBar) return false
+        if (other !is EventBarReview) return false
 
         return eventId == other.eventId && barId == other.barId && createdBy == other.createdBy
     }
