@@ -10,4 +10,6 @@ class EventBarReviewEntity(
     val comment: String,
     val createdBy: String,
     val createdAt: Instant,
+    val updatedBy: String,
+    val updatedAt: Instant,
 )
