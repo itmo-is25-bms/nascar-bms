@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test
 import ru.nascar.bms.NascarBmsIntegrationTest
 import ru.nascar.bms.event.controller.mapping.toTimestamp
 import ru.nascar.bms.presentation.abstractions.EventServiceProto
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.EventBarDto
+import ru.nascar.bms.presentation.abstractions.EventServiceProto.EventBarReviewDto
 import java.time.Instant
 
 private const val EVENT_ID = "EVENT-01"
@@ -36,7 +38,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
             authorUserId = request.userId,
             barIds = request.event.barIdsList,
             participantIds = listOf(request.userId),
-            status = EventServiceProto.EventStatusDto.EventStatusDto_Created
+            status = EventServiceProto.EventStatusDto.EventStatusDto_Created,
+            bars = request.event.barIdsList.map { barId -> getEventBarDto(barId) },
         )
 
         grpcAssert.assertProtoEqualsIgnoringId(
@@ -66,7 +69,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
             authorUserId = request.userId,
             barIds = request.event.barIdsList,
             participantIds = listOf(request.userId),
-            status = EventServiceProto.EventStatusDto.EventStatusDto_Created
+            status = EventServiceProto.EventStatusDto.EventStatusDto_Created,
+            bars = request.event.barIdsList.map { barId -> getEventBarDto(barId) },
         )
 
         grpcAssert.assertProtoEqualsIgnoringId(
@@ -96,7 +100,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
             authorUserId = request.userId,
             barIds = request.event.barIdsList,
             participantIds = listOf(request.userId),
-            status = EventServiceProto.EventStatusDto.EventStatusDto_Created
+            status = EventServiceProto.EventStatusDto.EventStatusDto_Created,
+            bars = request.event.barIdsList.map { barId -> getEventBarDto(barId) },
         )
 
         grpcAssert.assertProtoEqualsIgnoringId(
@@ -126,7 +131,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
             authorUserId = request.userId,
             barIds = request.event.barIdsList.distinct(),
             participantIds = listOf(request.userId),
-            status = EventServiceProto.EventStatusDto.EventStatusDto_Created
+            status = EventServiceProto.EventStatusDto.EventStatusDto_Created,
+            bars = request.event.barIdsList.distinct().map { barId -> getEventBarDto(barId) },
         )
 
         grpcAssert.assertProtoEqualsIgnoringId(
@@ -176,7 +182,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
             barIds = listOf("BAR-00", "BAR-01"),
             participantIds = listOf("testUser", "kslacker"),
             status = EventServiceProto.EventStatusDto.EventStatusDto_InProgress,
-            passcode = "M34021"
+            passcode = "M34021",
+            bars = listOf(getEventBarDto("BAR-00"), getEventBarDto("BAR-01")),
         )
 
         grpcAssert.assertProtoEquals(expectedEvent, response.event)
@@ -222,7 +229,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
             barIds = listOf("BAR-00", "BAR-01"),
             participantIds = listOf("testUser", "kslacker"),
             status = EventServiceProto.EventStatusDto.EventStatusDto_InProgress,
-            passcode = request.passcode
+            passcode = request.passcode,
+            bars = listOf(getEventBarDto("BAR-00"), getEventBarDto("BAR-01")),
         )
 
         grpcAssert.assertProtoEquals(expectedEvent, response.event)
@@ -269,7 +277,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
                 barIds = listOf("BAR-00", "BAR-01"),
                 participantIds = listOf("testUser", "kslacker"),
                 status = EventServiceProto.EventStatusDto.EventStatusDto_InProgress,
-                passcode = "M34021"
+                passcode = "M34021",
+                bars = listOf(getEventBarDto("BAR-00"), getEventBarDto("BAR-01")),
             ),
             getEventDto(
                 id = "EVENT-02",
@@ -279,7 +288,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
                 barIds = listOf("BAR-00"),
                 participantIds = listOf("kslacker"),
                 status = EventServiceProto.EventStatusDto.EventStatusDto_Created,
-                passcode = "DED_MOROZ"
+                passcode = "DED_MOROZ",
+                bars = listOf(getEventBarDto("BAR-00")),
             )
         )
         grpcAssert.assertProtoCollectionEqualsIgnoringOrder(expectedEvents, response.eventsList)
@@ -481,7 +491,8 @@ class EventControllerTest : NascarBmsIntegrationTest() {
         participantIds: List<String>,
         status: EventServiceProto.EventStatusDto,
         id: String = "",
-        passcode: String = ""
+        passcode: String = "",
+        bars: List<EventBarDto> = listOf(),
     ): EventServiceProto.EventDto {
         return EventServiceProto.EventDto.newBuilder()
             .setId(id)
@@ -492,6 +503,17 @@ class EventControllerTest : NascarBmsIntegrationTest() {
             .addAllParticipantIds(participantIds)
             .setStatus(status)
             .setPasscode(passcode)
+            .addAllEventBars(bars)
+            .build()
+    }
+
+    private fun getEventBarDto(
+        id: String = "",
+        reviews: List<EventBarReviewDto> = listOf(),
+    ): EventBarDto {
+        return EventBarDto.newBuilder()
+            .setBarId(id)
+            .addAllReviews(reviews)
             .build()
     }
 }
