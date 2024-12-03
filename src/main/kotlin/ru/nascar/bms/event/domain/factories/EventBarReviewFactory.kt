@@ -31,6 +31,8 @@ class EventBarReviewFactory {
                 comment = comment,
                 createdBy = createdBy,
                 createdAt = createdAt,
+                updatedBy = createdBy,
+                updatedAt = createdAt,
             )
         }
 
@@ -42,6 +44,8 @@ class EventBarReviewFactory {
             comment: String,
             createdBy: String,
             createdAt: Instant,
+            updatedBy: String,
+            updatedAt: Instant,
         ): EventBarReview {
             return EventBarReview(
                 id = id,
@@ -51,6 +55,8 @@ class EventBarReviewFactory {
                 comment = comment,
                 createdBy = createdBy,
                 createdAt = createdAt,
+                updatedBy = updatedBy,
+                updatedAt = updatedAt,
             )
         }
     }

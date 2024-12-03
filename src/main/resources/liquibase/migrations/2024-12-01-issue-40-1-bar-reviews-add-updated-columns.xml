@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="bar-reviews-add-updated-columns" author="DmitryBulin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="bar_reviews"/>
+            <and>
+                <not>
+                    <columnExists tableName="bar_reviews" columnName="updated_by"/>
+                </not>
+                <not>
+                    <columnExists tableName="bar_reviews" columnName="updated_at"/>
+                </not>
+            </and>
+        </preConditions>
+        <sql>
+             <![CDATA[
+            alter table bar_reviews
+            add updated_by text                                                   ,
+            add updated_at timestamptz default timezone('utc', now())::timestamptz;
+
+            update bar_reviews
+            set updated_by = created_by,
+                updated_at = created_at;
+
+            alter table bar_reviews
+            alter column updated_by set not null,
+            alter column updated_at set not null;
+            ]]>
+        </sql>
+        <rollback>
+            <dropColumn tableName="event_receipts" columnName="updated_by"/>
+            <dropColumn tableName="event_receipts" columnName="updated_at"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

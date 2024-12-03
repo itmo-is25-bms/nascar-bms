@@ -5,7 +5,6 @@ import ru.nascar.bms.event.domain.exception.EventAuthorRemovalException
 import ru.nascar.bms.event.domain.exception.InvalidEventIdException
 import ru.nascar.bms.event.domain.exception.InvalidEventStatusException
 import ru.nascar.bms.event.domain.exception.ReceiptAlreadyExistsException
-import ru.nascar.bms.event.domain.exception.ReviewAlreadyExistsException
 import ru.nascar.bms.event.domain.exception.UnauthorizedEventActionException
 import ru.nascar.bms.event.domain.exception.UserAlreadyExistsException
 import ru.nascar.bms.event.domain.exception.UserNotFoundInEventException
@@ -103,11 +102,18 @@ class Event(
         ensureValidBarId(review.barId)
         ensureValidParticipantId(review.createdBy)
 
-        if (review in reviews) {
-            throw ReviewAlreadyExistsException.create(eventId = id, barId = review.barId, userId = review.createdBy)
-        }
+        val existingReview = reviews.firstOrNull { it == review }
 
-        reviews += review
+        if (existingReview == null) {
+            reviews += review
+        } else {
+            existingReview.update(
+                score = review.score,
+                comment = review.comment,
+                updatedBy = review.updatedBy,
+                updatedAt = review.updatedAt,
+            )
+        }
     }
 
     private fun ensureValidEventId(eventId: String) {

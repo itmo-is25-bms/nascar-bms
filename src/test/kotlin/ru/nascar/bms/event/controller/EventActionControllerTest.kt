@@ -487,21 +487,21 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
     }
 
     @Test
-    @DatabaseSetup("/controller/event_action/add_review/review_already_exists/immutable.xml")
+    @DatabaseSetup("/controller/event_action/add_review/happy_path/review_already_exists/before.xml")
     @ExpectedDatabase(
-        value = "/controller/event_action/add_review/review_already_exists/immutable.xml",
+        value = "/controller/event_action/add_review/happy_path/review_already_exists/after.xml",
         assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
     )
-    fun `add event review - review by user for event and bar already exists - error`() {
+    fun `add another event review - happy path, review by user for event and bar already exists - review updated`() {
         // arrange
-        val request = getAddReviewRequest()
+        val request = getAddReviewRequest(reviewText = "Очень очень affordable")
 
-        // act & assert
-        grpcAssert.assertStatusException(
-            message = "Review for bar ${request.barId} during event ${request.eventId} by user ${request.userId} already exists"
-        ) {
-            eventActionServiceGrpc.addReview(request)
-        }
+        // act
+        val response = eventActionServiceGrpc.addReview(request)
+
+        // assert
+        val expectedResponse = EventActionServiceProto.AddReviewCommandResponse.getDefaultInstance()
+        grpcAssert.assertProtoEquals(expectedResponse, response)
     }
 
     private fun getStartEventRequest(): EventActionServiceProto.StartCommand {

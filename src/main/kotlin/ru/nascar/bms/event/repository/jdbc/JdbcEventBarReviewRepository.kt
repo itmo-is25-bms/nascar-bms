@@ -24,7 +24,9 @@ class JdbcEventBarReviewRepository(
                 br.score,
                 br.comment,
                 br.created_by,
-                br.created_at
+                br.created_at,
+                br.updated_by,
+                br.updated_at
             from bar_reviews br
         """
 
@@ -42,8 +44,13 @@ class JdbcEventBarReviewRepository(
 
 
         private const val UPSERT = """
-            insert into bar_reviews (id, event_id, bar_id, score, comment, created_by, created_at)
-            values (:id, :event_id, :bar_id, :score, :comment, :created_by, :created_at)
+            insert into bar_reviews (id, event_id, bar_id, score, comment, created_by, created_at, updated_by, updated_at)
+            values (:id, :event_id, :bar_id, :score, :comment, :created_by, :created_at, :updated_by, :updated_at)
+            on conflict (event_id, bar_id, created_by) do update set
+                score = :score,
+                comment = :comment,
+                updated_by = :updated_by,
+                updated_at = :updated_at
         """
 
         private const val DELETE_BY_ID = """
@@ -59,7 +66,9 @@ class JdbcEventBarReviewRepository(
                 score = rs.getInt("score"),
                 comment = rs.getString("comment"),
                 createdBy = rs.getString("created_by"),
-                createdAt = rs.getUtcInstant("created_at")
+                createdAt = rs.getUtcInstant("created_at"),
+                updatedBy = rs.getString("updated_by"),
+                updatedAt = rs.getUtcInstant("updated_at"),
             )
         }
     }
@@ -97,12 +106,12 @@ class JdbcEventBarReviewRepository(
     override fun saveAllFromEvent(event: Event) {
         val currentlyExistingInDb = findAllByEventId(event.id)
 
-        val eventBarReviewsToCreate = event.reviews.filter { eventBarReview -> eventBarReview !in currentlyExistingInDb }
         val eventBarReviewsToDelete = currentlyExistingInDb.filter { eventBarReview -> eventBarReview !in event.reviews }
+        val eventBarReviewsToSave = event.reviews.filter { eventBarReview -> eventBarReview !in eventBarReviewsToDelete }
 
         // TODO: do in batch + transaction
-        eventBarReviewsToCreate.forEach { eventBarReview -> save(eventBarReview) }
         eventBarReviewsToDelete.forEach { eventBarReview -> delete(eventBarReview.id) }
+        eventBarReviewsToSave.forEach { eventBarReview -> save(eventBarReview) }
     }
 
     override fun save(eventBarReview: EventBarReview) {
@@ -114,6 +123,8 @@ class JdbcEventBarReviewRepository(
             "comment" to eventBarReview.comment,
             "created_by" to eventBarReview.createdBy,
             "created_at" to eventBarReview.createdAt.toOffsetDateTime(),
+            "updated_by" to eventBarReview.updatedBy,
+            "updated_at" to eventBarReview.updatedAt.toOffsetDateTime(),
         )
 
         jdbcTemplate.update(
@@ -142,6 +153,8 @@ class JdbcEventBarReviewRepository(
             comment = eventBarReviewEntity.comment,
             createdBy = eventBarReviewEntity.createdBy,
             createdAt = eventBarReviewEntity.createdAt,
+            updatedBy = eventBarReviewEntity.updatedBy,
+            updatedAt = eventBarReviewEntity.updatedAt,
         )
     }
 }
