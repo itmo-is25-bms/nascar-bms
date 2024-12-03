@@ -25,6 +25,7 @@ message EventDto {
   string author_user_id = 6;
   repeated string participant_ids = 7;
   repeated string bar_ids = 8;
+  repeated EventBarDto event_bars = 9;
 }
 
 enum EventStatusDto {
@@ -32,6 +33,17 @@ enum EventStatusDto {
   EventStatusDto_Created = 1;
   EventStatusDto_InProgress = 2;
   EventStatusDto_Finished = 3;
+}
+
+message EventBarDto {
+  string bar_id = 1;
+  repeated EventBarReviewDto reviews = 2;
+}
+
+message EventBarReviewDto {
+  string user_id = 1;
+  int32 score = 2;
+  optional string review_text = 3;
 }
 
 message CreateCommand {
