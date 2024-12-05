@@ -1,13 +1,13 @@
 package ru.nascar.bms.config
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import net.devh.boot.grpc.client.autoconfigure.GrpcClientAutoConfiguration
 import net.devh.boot.grpc.client.autoconfigure.GrpcClientHealthAutoConfiguration
 import net.devh.boot.grpc.client.autoconfigure.GrpcClientMetricAutoConfiguration
+import net.devh.boot.grpc.client.autoconfigure.GrpcClientMicrometerTraceAutoConfiguration
 import net.devh.boot.grpc.client.autoconfigure.GrpcClientSecurityAutoConfiguration
-import net.devh.boot.grpc.client.autoconfigure.GrpcClientTraceAutoConfiguration
 import net.devh.boot.grpc.client.autoconfigure.GrpcDiscoveryClientAutoConfiguration
 import net.devh.boot.grpc.common.autoconfigure.GrpcCommonCodecAutoConfiguration
-import net.devh.boot.grpc.common.autoconfigure.GrpcCommonTraceAutoConfiguration
 import net.devh.boot.grpc.server.autoconfigure.GrpcAdviceAutoConfiguration
 import net.devh.boot.grpc.server.autoconfigure.GrpcHealthServiceAutoConfiguration
 import net.devh.boot.grpc.server.autoconfigure.GrpcMetadataConsulConfiguration
@@ -18,10 +18,9 @@ import net.devh.boot.grpc.server.autoconfigure.GrpcReflectionServiceAutoConfigur
 import net.devh.boot.grpc.server.autoconfigure.GrpcServerAutoConfiguration
 import net.devh.boot.grpc.server.autoconfigure.GrpcServerFactoryAutoConfiguration
 import net.devh.boot.grpc.server.autoconfigure.GrpcServerMetricAutoConfiguration
+import net.devh.boot.grpc.server.autoconfigure.GrpcServerMicrometerTraceAutoConfiguration
 import net.devh.boot.grpc.server.autoconfigure.GrpcServerSecurityAutoConfiguration
-import net.devh.boot.grpc.server.autoconfigure.GrpcServerTraceAutoConfiguration
 import net.devh.boot.grpc.server.event.GrpcServerStartedEvent
-import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.EventListener
@@ -32,10 +31,9 @@ import org.springframework.context.event.EventListener
     GrpcClientMetricAutoConfiguration::class,
     GrpcClientHealthAutoConfiguration::class,
     GrpcClientSecurityAutoConfiguration::class,
-    GrpcClientTraceAutoConfiguration::class,
+    GrpcClientMicrometerTraceAutoConfiguration::class,
     GrpcDiscoveryClientAutoConfiguration::class,
     GrpcCommonCodecAutoConfiguration::class,
-    GrpcCommonTraceAutoConfiguration::class,
     GrpcAdviceAutoConfiguration::class,
     GrpcHealthServiceAutoConfiguration::class,
     GrpcMetadataConsulConfiguration::class,
@@ -47,13 +45,13 @@ import org.springframework.context.event.EventListener
     GrpcServerFactoryAutoConfiguration::class,
     GrpcServerMetricAutoConfiguration::class,
     GrpcServerSecurityAutoConfiguration::class,
-    GrpcServerTraceAutoConfiguration::class
+    GrpcServerMicrometerTraceAutoConfiguration::class
 )
 private class GrpcServerConfig {
-    private val log = LoggerFactory.getLogger(GrpcServerConfig::class.java)
+    private val log = KotlinLogging.logger {  }
 
     @EventListener
     fun onServerStarted(event: GrpcServerStartedEvent) {
-        log.info("gRPC Server started, services: ${event.server.services[0].methods}")
+        log.info { "gRPC Server started, services: ${event.server.services[0].methods}" }
     }
 }
