@@ -25,3 +25,12 @@ spring:
   liquibase:
     change-log: classpath:liquibase/changelog-master.xml
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true

@@ -8,8 +8,8 @@ val grpcKotlinVersion by extra("1.3.0")
 val springBootVersion by extra("3.0.5")
 
 plugins {
-	id("org.springframework.boot") version "3.0.5"
-	id("io.spring.dependency-management") version "1.1.0"
+	id("org.springframework.boot") version "3.4.0"
+	id("io.spring.dependency-management") version "1.1.6"
 	id("com.google.protobuf") version "0.9.2"
 	kotlin("jvm") version "1.7.22"
 	kotlin("plugin.spring") version "1.7.22"
@@ -28,16 +28,18 @@ repositories {
 
 dependencies {
 	// spring boot
-	implementation("org.springframework.boot:spring-boot-starter-parent:$springBootVersion")
-	implementation("org.springframework.boot:spring-boot-maven-plugin:$springBootVersion")
 	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-	implementation("org.springframework.boot:spring-boot-starter-actuator:3.3.5")
+
+	// spring
 	implementation("org.springframework.retry:spring-retry:2.0.10")
 	implementation("org.springframework:spring-aspects:6.1.14")
 
+	// metrics
+	implementation("io.micrometer:micrometer-registry-prometheus:1.14.1")
 
 	// grpc
 	implementation("net.devh:grpc-spring-boot-starter:2.14.0.RELEASE")
