@@ -57,7 +57,7 @@ class JdbcBarSummaryRepository(
     override fun updateBarSummary(barId: String, summary: BarSummary) {
         val params = mapOf(
             "bar_id" to barId,
-            "summary_tags" to summary.summaryTags,
+            "summary_tags" to summary.summaryTags.toTypedArray(),
             "score" to summary.score,
         )
 
