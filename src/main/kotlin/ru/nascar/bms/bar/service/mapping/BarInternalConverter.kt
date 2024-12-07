@@ -7,6 +7,8 @@ fun BarEntity.toDomainModel(): Bar {
     return Bar(
         id = id,
         name = name,
-        address = address
+        address = address,
+        summaryTags = summaryTags,
+        score = score,
     )
 }

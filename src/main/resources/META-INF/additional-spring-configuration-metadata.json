@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "bmsReviewSummarizer.tagsQuantity",
+      "type": "java.lang.Integer",
+      "description": "Number of tags to set to bar."
+    },
+    {
+      "name": "bmsReviewSummarizer.maxFeatures",
+      "type": "java.lang.Integer",
+      "description": "Max features for summarizer model."
+    }
+  ]
+}

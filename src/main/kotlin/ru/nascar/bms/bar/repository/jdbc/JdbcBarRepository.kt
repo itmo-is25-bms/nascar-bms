@@ -22,7 +22,9 @@ class JdbcBarRepository(
                 b.created_by,
                 b.created_at,
                 b.updated_by,
-                b.updated_at
+                b.updated_at,
+                b.summary_tags,
+                b.score
             from bars b
         """
 
@@ -56,6 +58,8 @@ class JdbcBarRepository(
                 createdAt = rs.getUtcInstant("created_at"),
                 updatedBy = rs.getString("updated_by"),
                 updatedAt = rs.getUtcInstant("updated_at"),
+                summaryTags = if (rs.getObject("summary_tags") != null) ((rs.getArray("summary_tags")!!.array as Array<String>).toList()) else null,
+                score = if (rs.getObject("score") != null) rs.getDouble("score") else null,
             )
         }
     }

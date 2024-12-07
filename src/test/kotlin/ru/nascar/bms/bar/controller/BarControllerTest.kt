@@ -138,6 +138,7 @@ class BarControllerTest : NascarBmsIntegrationTest() {
             .setId(id)
             .setName(name)
             .setAddress(address)
+            .setBarSummary(BarServiceProto.BarSummaryDto.newBuilder().build())
             .build()
     }
 }

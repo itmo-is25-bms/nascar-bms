@@ -4,6 +4,16 @@ server:
 grpc:
   server:
     port: 8000
+  client:
+    bmsReviewSummarizer:
+      address: static://${BMS_REVIEW_SUMMARIZER_ADDRESS}
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+bmsReviewSummarizer:
+  tagsQuantity: ${BMS_REVIEW_SUMMARIZER_TAGS_QUANTITY}
+  maxFeatures: ${BMS_REVIEW_SUMMARIZER_MAX_FEATURES}
 
 spring:
   application:
