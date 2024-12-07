@@ -33,8 +33,8 @@
             ]]>
         </sql>
         <rollback>
-            <dropColumn tableName="event_receipts" columnName="updated_by"/>
-            <dropColumn tableName="event_receipts" columnName="updated_at"/>
+            <dropColumn tableName="bar_reviews" columnName="updated_by"/>
+            <dropColumn tableName="bar_reviews" columnName="updated_at"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

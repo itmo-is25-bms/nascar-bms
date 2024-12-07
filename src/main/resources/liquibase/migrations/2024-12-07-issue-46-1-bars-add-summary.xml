@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="bars-add-summary-columns" author="DmitryBulin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="bars"/>
+            <and>
+                <not>
+                    <columnExists tableName="bars" columnName="summary_tags"/>
+                </not>
+                <not>
+                    <columnExists tableName="bars" columnName="score"/>
+                </not>
+            </and>
+        </preConditions>
+        <sql>
+            <![CDATA[
+            alter table bars
+            add summary_tags text[] NULL,
+            add score        decimal NULL;
+            ]]>
+        </sql>
+        <rollback>
+            <dropColumn tableName="bars" columnName="summary_tags"/>
+            <dropColumn tableName="bars" columnName="score"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
