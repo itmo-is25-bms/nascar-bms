@@ -1,5 +1,6 @@
 package ru.nascar.bms.bar_summary.service.impl
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import ru.nascar.bms.bar_summary.domain.BarSummary
 import ru.nascar.bms.bar_summary.domain.ReviewEntry
@@ -9,6 +10,10 @@ import ru.nascar.bms.bar_summary.service.BarSummaryService
 
 @Service
 class DefaultBarSummaryService(
+    @Value("\${bms-review-summarizer.tagsQuantity}")
+    private val tagsQuantity: Int,
+    @Value("\${bms-review-summarizer.maxFeatures}")
+    private val maxFeatures: Int,
     private val barSummaryRepository: BarSummaryRepository,
     private val summarizerClient: SummarizerClient
 ) : BarSummaryService {
@@ -31,7 +36,7 @@ class DefaultBarSummaryService(
     }
 
     private fun getSummaryTags(reviewEntries: List<ReviewEntry>): List<String> {
-        return summarizerClient.getSummaryTags(reviews = reviewEntries)
+        return summarizerClient.getSummaryTags(reviews = reviewEntries, tagsQuantity = tagsQuantity, maxFeatures = maxFeatures)
     }
 
     private fun calculateScore(reviewEntries: List<ReviewEntry>): Double {

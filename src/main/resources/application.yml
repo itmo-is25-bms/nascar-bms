@@ -11,6 +11,10 @@ grpc:
       keepAliveWithoutCalls: true
       negotiationType: plaintext
 
+bms-review-summarizer:
+  tagsQuantity: ${BMS_REVIEW_SUMMARIZER_TAGS_QUANTITY}
+  maxFeatures: ${BMS_REVIEW_SUMMARIZER_MAX_FEATURES}
+
 spring:
   application:
     name: nascar-bms

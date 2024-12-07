@@ -14,7 +14,7 @@ import ru.nascar.bms.presentation.abstractions.SummaryServiceGrpc
     beanName = "blockingStub",
     client = GrpcClient("bms-review-summarizer")
 )
-class SummarizerConfiguration {
+class SummarizerClientConfiguration {
     @Bean
     fun summarizerClientBean(@Autowired blockingStub: SummaryServiceGrpc.SummaryServiceBlockingStub?): DefaultSummarizerClient {
         return DefaultSummarizerClient(blockingStub!!)
