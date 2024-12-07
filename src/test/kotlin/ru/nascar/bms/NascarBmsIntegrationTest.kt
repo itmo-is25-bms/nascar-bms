@@ -25,7 +25,10 @@ import java.time.Clock
         "grpc.server.inProcessName=test",
         "grpc.client.barService.address=in-process:test",
         "grpc.client.eventService.address=in-process:test",
-        "grpc.client.eventActionService.address=in-process:test"
+        "grpc.client.eventActionService.address=in-process:test",
+        "grpc.client.bmsReviewSummarizer.address=static://127.0.0.1",
+        "bmsReviewSummarizer.tagsQuantity=5",
+        "bmsReviewSummarizer.maxFeatures=10000"
     ]
 )
 @Transactional(propagation = Propagation.SUPPORTS)

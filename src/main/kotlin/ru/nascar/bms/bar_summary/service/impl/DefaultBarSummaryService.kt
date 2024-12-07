@@ -10,9 +10,9 @@ import ru.nascar.bms.bar_summary.service.BarSummaryService
 
 @Service
 class DefaultBarSummaryService(
-    @Value("\${bms-review-summarizer.tagsQuantity}")
+    @Value("\${bmsReviewSummarizer.tagsQuantity}")
     private val tagsQuantity: Int,
-    @Value("\${bms-review-summarizer.maxFeatures}")
+    @Value("\${bmsReviewSummarizer.maxFeatures}")
     private val maxFeatures: Int,
     private val barSummaryRepository: BarSummaryRepository,
     private val summarizerClient: SummarizerClient

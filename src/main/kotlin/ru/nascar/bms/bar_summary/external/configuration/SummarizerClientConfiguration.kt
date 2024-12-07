@@ -12,7 +12,7 @@ import ru.nascar.bms.presentation.abstractions.SummaryServiceGrpc
 @GrpcClientBean(
     clazz = SummaryServiceGrpc.SummaryServiceBlockingStub::class,
     beanName = "blockingStub",
-    client = GrpcClient("bms-review-summarizer")
+    client = GrpcClient("bmsReviewSummarizer")
 )
 class SummarizerClientConfiguration {
     @Bean

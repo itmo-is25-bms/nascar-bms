@@ -68,7 +68,7 @@ class DefaultEventActionService(
         eventRepository.save(event)
 
         // TODO: async update bar summary
-        barSummaryService.updateBarSummary(barId = barId)
+        // barSummaryService.updateBarSummary(barId = barId)
     }
 
     @Transactional
