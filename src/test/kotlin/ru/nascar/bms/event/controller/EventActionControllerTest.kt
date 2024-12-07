@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import ru.nascar.bms.NascarBmsIntegrationTest
+import ru.nascar.bms.event.domain.event.ReviewAddedEvent
 import ru.nascar.bms.event.domain.model.EventBarReview
 import ru.nascar.bms.presentation.abstractions.EventActionServiceProto
 
@@ -349,7 +350,9 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
     )
     fun `add event review - happy path, full review with text - review added`() {
         // arrange
-        val request = getAddReviewRequest(reviewText = "Очень очень affordable")
+        val reviewText = "Очень очень affordable"
+        val request = getAddReviewRequest(reviewText = reviewText)
+        val event = getAddReviewEvent(reviewText = reviewText)
 
         // act
         val response = eventActionServiceGrpc.addReview(request)
@@ -357,6 +360,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
         // assert
         val expectedResponse = EventActionServiceProto.AddReviewCommandResponse.getDefaultInstance()
         grpcAssert.assertProtoEquals(expectedResponse, response)
+        eventAssert.assertEventsSent(event)
     }
 
     @Test
@@ -368,6 +372,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
     fun `add event review - happy path, review without text - review added`() {
         // arrange
         val request = getAddReviewRequest()
+        val event = getAddReviewEvent()
 
         // act
         val response = eventActionServiceGrpc.addReview(request)
@@ -375,6 +380,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
         // assert
         val expectedResponse = EventActionServiceProto.AddReviewCommandResponse.getDefaultInstance()
         grpcAssert.assertProtoEquals(expectedResponse, response)
+        eventAssert.assertEventsSent(event)
     }
 
     @Test
@@ -386,6 +392,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
     fun `add event review - happy path, review on second bar by same user - review added`() {
         // arrange
         val request = getAddReviewRequest()
+        val event = getAddReviewEvent()
 
         // act
         val response = eventActionServiceGrpc.addReview(request)
@@ -393,6 +400,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
         // assert
         val expectedResponse = EventActionServiceProto.AddReviewCommandResponse.getDefaultInstance()
         grpcAssert.assertProtoEquals(expectedResponse, response)
+        eventAssert.assertEventsSent(event)
     }
 
     @Test
@@ -404,6 +412,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
     fun `add event review - happy path, second review on bar by another user - review added`() {
         // arrange
         val request = getAddReviewRequest()
+        val event = getAddReviewEvent()
 
         // act
         val response = eventActionServiceGrpc.addReview(request)
@@ -411,6 +420,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
         // assert
         val expectedResponse = EventActionServiceProto.AddReviewCommandResponse.getDefaultInstance()
         grpcAssert.assertProtoEquals(expectedResponse, response)
+        eventAssert.assertEventsSent(event)
     }
 
     @Test
@@ -428,6 +438,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
             message = "Event ${request.eventId} not found"
         ) {
             eventActionServiceGrpc.addReview(request)
+            eventAssert.assertNoEventsSent()
         }
     }
 
@@ -446,6 +457,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
             message = "User ${request.userId} not found in event ${request.eventId}"
         ) {
             eventActionServiceGrpc.addReview(request)
+            eventAssert.assertNoEventsSent()
         }
     }
 
@@ -464,6 +476,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
             message = "Bar ${request.barId} not found in event ${request.eventId}"
         ) {
             eventActionServiceGrpc.addReview(request)
+            eventAssert.assertNoEventsSent()
         }
     }
 
@@ -483,6 +496,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
             message = "Score $score is out of bounds. Value should be between ${EventBarReview.MIN_SCORE} and ${EventBarReview.MAX_SCORE}"
         ) {
             eventActionServiceGrpc.addReview(request)
+            eventAssert.assertNoEventsSent()
         }
     }
 
@@ -494,7 +508,9 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
     )
     fun `add another event review - happy path, review by user for event and bar already exists - review updated`() {
         // arrange
-        val request = getAddReviewRequest(reviewText = "Очень очень affordable")
+        val reviewText = "Очень очень affordable"
+        val request = getAddReviewRequest(reviewText = reviewText)
+        val event = getAddReviewEvent(reviewText = reviewText)
 
         // act
         val response = eventActionServiceGrpc.addReview(request)
@@ -502,6 +518,7 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
         // assert
         val expectedResponse = EventActionServiceProto.AddReviewCommandResponse.getDefaultInstance()
         grpcAssert.assertProtoEquals(expectedResponse, response)
+        eventAssert.assertEventsSent(event)
     }
 
     private fun getStartEventRequest(): EventActionServiceProto.StartCommand {
@@ -541,6 +558,14 @@ class EventActionControllerTest: NascarBmsIntegrationTest() {
             .setUserId(USER_ID)
             .setReview(review)
             .build()
+    }
+
+    private fun getAddReviewEvent(reviewText: String = ""): ReviewAddedEvent {
+        return ReviewAddedEvent(
+            eventId = EVENT_ID,
+            barId = BAR_ID,
+            reviewText = reviewText,
+        )
     }
 
     companion object {
