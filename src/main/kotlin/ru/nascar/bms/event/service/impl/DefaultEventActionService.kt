@@ -1,15 +1,19 @@
 package ru.nascar.bms.event.service.impl
 
+
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.nascar.bms.bar_summary.service.BarSummaryService
+import ru.nascar.bms.event.domain.event.ReviewAddedEvent
 import ru.nascar.bms.event.domain.factories.EventBarReviewFactory
 import ru.nascar.bms.event.domain.factories.EventReceiptFactory
 import ru.nascar.bms.event.repository.EventRepository
 import ru.nascar.bms.event.service.EventActionService
+import ru.nascar.bms.event.service.EventPublisher
 import ru.nascar.bms.receipt.service.ReceiptService
 import java.time.Clock
 
@@ -18,7 +22,7 @@ class DefaultEventActionService(
     private val receiptService: ReceiptService,
     private val eventRepository: EventRepository,
     private val clock: Clock,
-    private val barSummaryService: BarSummaryService,
+    private val eventPublisher: EventPublisher,
 ) : EventActionService {
     @Transactional
     override fun start(eventId: String, userId: String) {
@@ -67,8 +71,13 @@ class DefaultEventActionService(
 
         eventRepository.save(event)
 
-        // TODO: async update bar summary
-        // barSummaryService.updateBarSummary(barId = barId)
+        eventPublisher.publish(
+            ReviewAddedEvent(
+                eventId = event.id,
+                barId = barId,
+                reviewText = reviewText,
+            )
+        )
     }
 
     @Transactional
