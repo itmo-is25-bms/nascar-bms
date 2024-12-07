@@ -5,6 +5,7 @@ import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.nascar.bms.bar_summary.service.BarSummaryService
 import ru.nascar.bms.event.domain.factories.EventBarReviewFactory
 import ru.nascar.bms.event.domain.factories.EventReceiptFactory
 import ru.nascar.bms.event.repository.EventRepository
@@ -17,6 +18,7 @@ class DefaultEventActionService(
     private val receiptService: ReceiptService,
     private val eventRepository: EventRepository,
     private val clock: Clock,
+    private val barSummaryService: BarSummaryService,
 ) : EventActionService {
     @Transactional
     override fun start(eventId: String, userId: String) {
@@ -64,6 +66,9 @@ class DefaultEventActionService(
         event.addReview(review)
 
         eventRepository.save(event)
+
+        // TODO: async update bar summary
+        barSummaryService.updateBarSummary(barId = barId)
     }
 
     @Transactional

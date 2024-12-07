@@ -4,6 +4,12 @@ server:
 grpc:
   server:
     port: 8000
+  client:
+    bms-review-summarizer:
+      address: static://${BMS_REVIEW_SUMMARIZER_ADDRESS}
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
 
 spring:
   application:
