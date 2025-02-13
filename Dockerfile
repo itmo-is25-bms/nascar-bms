@@ -1,20 +1,17 @@
-# Start with a base image containing Java runtime
-FROM amazoncorretto:17-alpine-jdk
-
-# Create a directory
+FROM eclipse-temurin:17-jdk-jammy AS builder
 WORKDIR /app
-
-# Copy all the files from the current directory to the image
-COPY .. .
-
-RUN apk add libstdc++
-RUN apk add gcompat
-
-# build the project avoiding tests
+COPY . .
 RUN ./gradlew clean build -x test
 
-# Expose port 8080
-EXPOSE 8080
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
 
-# Run the jar file
-CMD ["java", "-jar", "./build/libs/bms-1.0.jar"]
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+RUN chown -R appuser:appgroup /app
+
+COPY --from=builder /app/build/libs/*.jar app.jar
+
+USER appuser
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

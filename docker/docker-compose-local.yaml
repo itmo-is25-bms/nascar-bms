@@ -1,7 +1,6 @@
 services:
   bms_db:
     image: postgres:latest
-    container_name: bms_db
     ports:
       - "5432:5432"
     restart: always
@@ -12,20 +11,25 @@ services:
       - POSTGRES_HOST=5432
     volumes:
       - ./docker_data/bms_db:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d bms_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   bms:
-    container_name: bms_app
     build:
-      context: .
-      dockerfile: ../Dockerfile
+      platforms:
+        - linux/amd64
+      context: ..
       args:
         DB_URL: ${DB_URL}
         PG_USER: ${DB_USER}
         PG_PASSWORD: ${DB_PASSWORD}
     ports:
       - "8000:8000"
-    environment:
-      DB_URL: postgresql://bms_db:5432/postgres
-      DB_USER: postgres
-      DB_PASSWORD: postgres
+    env_file:
+      - .env
     depends_on:
-      - bms_db
+      bms_db:
+        condition: service_healthy
